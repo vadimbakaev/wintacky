@@ -25,6 +25,9 @@ lazy val server = project
     name := """wintacky""",
     scalaJSProjects := Seq(client),
     pipelineStages in Assets := Seq(scalaJSPipeline),
+    pipelineStages := Seq(digest, gzip),
+    // triggers scalaJSPipeline when using compile or continuous compilation
+    compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
     scalafmtOnCompile := true
   )
@@ -55,5 +58,5 @@ lazy val shared = crossProject
   .jsConfigure(_ enablePlugins ScalaJSWeb)
 
 lazy val sharedJvm = shared.jvm
-
 lazy val sharedJs = shared.js
+
