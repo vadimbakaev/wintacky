@@ -29,7 +29,9 @@ lazy val server = project
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
+    // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
+    EclipseKeys.preTasks := Seq(compile in Compile)
   )
   .dependsOn(sharedJvm)
 

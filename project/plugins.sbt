@@ -8,6 +8,8 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.2")
 
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.2.2")
+
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.15")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
