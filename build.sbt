@@ -19,8 +19,10 @@ lazy val server = project
       "com.vmunier" %% "scalajs-scripts" % "1.1.1",
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
       "org.webjars" %% "webjars-play" % "2.6.3",
-      "org.webjars" % "bootstrap" % "4.0.0",
-      "org.webjars" % "animate.css" % "3.5.2"
+      "org.webjars" % "bootstrap" % "4.0.0-2",
+      "org.webjars" % "animate.css" % "3.5.2",
+      "org.webjars" % "jquery" % "3.3.1-1",
+      "org.webjars.npm" % "popper.js" % "1.14.0"
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),
