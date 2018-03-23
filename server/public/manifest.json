@@ -1,7 +1,8 @@
 {
   "name": "Wintacky",
   "short_name": "Wintacky",
-  "start_url": ".",
+  "lang": "en-US",
+  "start_url": "/",
   "display": "standalone",
   "theme_color" : "#343A40",
   "background_color": "#fff",
