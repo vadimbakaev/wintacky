@@ -1,11 +1,12 @@
 {
   "name": "Wintacky",
   "short_name": "Wintacky",
-  "lang": "en-US",
   "start_url": "/",
-  "display": "standalone",
-  "theme_color" : "#343A40",
+  "theme_color": "#343A40",
   "background_color": "#fff",
+  "orientation": "portrait-primary",
+  "display": "standalone",
+  "lang": "en-US",
   "description": "Wintacky project app description.",
   "icons": [
     {
