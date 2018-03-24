@@ -6,3 +6,21 @@ body {
     padding: 1rem 1rem;
     text-align: center;
 }
+
+.input-group {
+    padding: 2rem 2rem 2rem 2rem;
+    text-align: center;
+}
+
+.card-columns {
+  @include media-breakpoint-only(lg) {
+    column-count: 4;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 5;
+  }
+}
+
+.container-fluid {
+   max-width:1440px;
+}

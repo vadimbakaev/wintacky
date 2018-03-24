@@ -1,0 +1,11 @@
+@(liveEvents: Seq[LiveEvent])
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+
+        @liveEvents.map{ event =>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">@card(event)</div>
+        }
+
+    </div>
+</div>
