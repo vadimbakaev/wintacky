@@ -1,76 +1,23 @@
-@(title: String)(content: Html)
-<!DOCTYPE html>
-<html lang="en">
+@(content: Html)
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="theme-color" content="#343a40"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="True this search engine">
-        <meta name="author" content="Bakaev Vadim">
-        @* Here's where we render the page title `String`. *@
-        <title>@title</title>
-        <link rel="manifest" href='@routes.Assets.versioned("manifest.json")'>
-        <link rel="shortcut icon" type="image/x-icon" href='@routes.Assets.versioned("images/favicon.ico")'>
+<main class="container">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href='@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")'>
-        <link rel="stylesheet" type="text/css" href='@routes.Assets.versioned("lib/animate.css/animate.min.css")'>
-        <link rel="stylesheet" type="text/css" media="screen" href='@routes.Assets.versioned("stylesheets/main.css")'>
-    </head>
+    <div class="starter-template">
+        <h1>Short project message</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+            mostly barebones HTML document.</p>
+    </div>
 
-    <body>
-
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Wintacky</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link disabled" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Sign in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Sign up</a>
-                </li>
-            </ul>
+    <div class="row justify-content-center">
+        <div class=".col-">
+            <form class="input-group">
+                <input class="form-control" type="text" placeholder="e.g Holy Grail" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">Search</button>
+                </div>
+            </form>
         </div>
+    </div>
 
-    </nav>
+</main>
 
-    <main class="container">
-
-        <div class="starter-template">
-            <h1>Short project message</h1>
-            <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-        </div>
-
-        <div class="row justify-content-center">
-            <div class=".col-">
-                <form class="input-group">
-                    <input class="form-control" type="text" placeholder="e.g Holy Grail" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-success" type="submit">Search</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src='@routes.Assets.versioned("lib/jquery/jquery.min.js")'></script>
-    <script src='@routes.Assets.versioned("lib/popper.js/dist/umd/popper.min.js")'></script>
-    <script src='@routes.Assets.versioned("lib/bootstrap/js/bootstrap.min.js")'></script>
-    <script src='@routes.Assets.versioned("javascripts/main.js")'></script>
-
-    </body>
-
-</html>
