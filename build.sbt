@@ -41,8 +41,9 @@ lazy val client = project
   .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
   .settings(commonSettings: _ *)
   .settings(
-    scalaJSUseMainModuleInitializer := false,
+    scalaJSUseMainModuleInitializer := true,
     scalaJSUseMainModuleInitializer in Test := false,
+    scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "0.9.5",
       "com.lihaoyi" %%% "scalatags" % "0.6.7"

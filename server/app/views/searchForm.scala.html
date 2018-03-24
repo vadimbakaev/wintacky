@@ -1,0 +1,15 @@
+@(key: Option[String] = None)
+
+<div class="row justify-content-center">
+
+    <div class="col" style="max-width: 30rem;">
+        <div class="input-group mx-auto">
+            <input id="search-input" name="key" class="form-control" type="text" placeholder="e.g Holy Grail"
+                   aria-label="Search" value='@key.getOrElse("")'>
+            <div class="input-group-append">
+                <button id="search-btn" class="btn btn-primary" type="button">Search</button>
+            </div>
+        </div>
+    </div>
+
+</div>
