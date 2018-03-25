@@ -15,14 +15,18 @@ lazy val server = project
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      guice,
-      "com.vmunier" %% "scalajs-scripts" % "1.1.1",
-      "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
-      "org.webjars" %% "webjars-play" % "2.6.3",
+      //Java
+      "org.elasticsearch" % "elasticsearch" % "6.0.1",
+      "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "6.0.1",
       "org.webjars" % "bootstrap" % "4.0.0-2",
       "org.webjars" % "animate.css" % "3.5.2",
       "org.webjars" % "jquery" % "3.3.1-1",
-      "org.webjars.npm" % "popper.js" % "1.14.0"
+      "org.webjars.npm" % "popper.js" % "1.14.0",
+      //Scala
+      guice,
+      "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+      "com.vmunier" %% "scalajs-scripts" % "1.1.1",
+      "org.webjars" %% "webjars-play" % "2.6.3",
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),

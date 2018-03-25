@@ -1,11 +1,22 @@
 package services
 
-import com.google.inject.{ImplementedBy, Singleton}
-import models.LiveEvent
+import java.util.Base64
 
-import scala.concurrent.Future
+import com.google.inject.{ImplementedBy, Singleton}
+import javax.inject.Inject
+import models.LiveEvent
+import org.apache.http.HttpHost
+import org.apache.http.message.BasicHeader
+import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
+import org.elasticsearch.client.{RestClient, RestHighLevelClient}
+import org.elasticsearch.index.query.QueryStringQueryBuilder
+import org.elasticsearch.search.builder.SearchSourceBuilder
+import play.api.Configuration
+import play.api.libs.json.Json
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Random
+import scala.concurrent.Future
+import scala.util.Try
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
@@ -13,19 +24,41 @@ trait SearchService {
 }
 
 @Singleton
-class SearchServiceImpl extends SearchService {
-  override def search(key: Option[String]): Future[Seq[LiveEvent]] =
-    Future.successful(key.map(k => SearchServiceImpl.EventsStub(k)).getOrElse(Nil))
-}
+class SearchServiceImpl @Inject()(
+                                   configuration: Configuration
+                                 ) extends SearchService {
 
-object SearchServiceImpl {
-  def EventsStub(key: String): Seq[LiveEvent] = (1 to Random.nextInt(23)).map(
-    index =>
-      LiveEvent(
-        s"$key $index",
-        "Warsaw, Poland",
-        "6 April 2018 - 7 April 2018",
-        "This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer."
-    )
+  private lazy val elasticHost  : String      = configuration.get[String]("elastic.host")
+  private lazy val elasticPort  : Int         = configuration.get[Int]("elastic.port")
+  private lazy val elasticScheme: String      = configuration.get[String]("elastic.scheme")
+  private lazy val accessKey    : String      = configuration.get[String]("elastic.access.key")
+  private lazy val accessSecret : String      = configuration.get[String]("elastic.access.secret")
+  private lazy val host         : HttpHost    = new HttpHost(elasticHost, elasticPort, elasticScheme)
+  private lazy val authorization: BasicHeader = new BasicHeader(
+    "Authorization",
+    s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
   )
+
+  override def search(maybeKey: Option[String]): Future[Seq[LiveEvent]] = maybeKey match {
+    case None      =>
+      Future.successful(Nil)
+    case Some(key) =>
+      Future {
+
+        val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
+        val searchRequest = new SearchRequest()
+          .indices("wintacky")
+          .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(key)))
+
+        val response: SearchResponse = client.search(searchRequest)
+
+        Try(client.close())
+
+        response.getHits.getHits
+          .filter(_.getType == "live-event")
+          .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEvent].asOpt)
+          .toSeq
+      }
+  }
+
 }
