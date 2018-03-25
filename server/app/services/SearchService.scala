@@ -25,22 +25,22 @@ trait SearchService {
 
 @Singleton
 class SearchServiceImpl @Inject()(
-                                   configuration: Configuration
-                                 ) extends SearchService {
+    configuration: Configuration
+) extends SearchService {
 
-  private lazy val elasticHost  : String      = configuration.get[String]("elastic.host")
-  private lazy val elasticPort  : Int         = configuration.get[Int]("elastic.port")
-  private lazy val elasticScheme: String      = configuration.get[String]("elastic.scheme")
-  private lazy val accessKey    : String      = configuration.get[String]("elastic.access.key")
-  private lazy val accessSecret : String      = configuration.get[String]("elastic.access.secret")
-  private lazy val host         : HttpHost    = new HttpHost(elasticHost, elasticPort, elasticScheme)
+  private lazy val elasticHost: String   = configuration.get[String]("elastic.host")
+  private lazy val elasticPort: Int      = configuration.get[Int]("elastic.port")
+  private lazy val elasticScheme: String = configuration.get[String]("elastic.scheme")
+  private lazy val accessKey: String     = configuration.get[String]("elastic.access.key")
+  private lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
+  private lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
   private lazy val authorization: BasicHeader = new BasicHeader(
     "Authorization",
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
   )
 
   override def search(maybeKey: Option[String]): Future[Seq[LiveEvent]] = maybeKey match {
-    case None      =>
+    case None =>
       Future.successful(Nil)
     case Some(key) =>
       Future {
