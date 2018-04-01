@@ -8,7 +8,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result, _}
 import scala.concurrent.Future
 
 @Singleton
-class AuthenticationService @Inject()(
+class AuthenticationControllerHelper @Inject()(
     cache: SyncCacheApi,
     actionBuilder: DefaultActionBuilder
 ) {
