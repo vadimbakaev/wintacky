@@ -52,6 +52,7 @@ class AuthController @Inject()(
             .getToken(code)
             .map {
               case (idToken, accessToken) =>
+                cache.set(idToken + "profile", true)
                 Redirect(routes.HomeController.index())
                   .withSession(
                     "idToken"     -> idToken,
@@ -59,7 +60,7 @@ class AuthController @Inject()(
                   )
             }
             .recover {
-              case ex: IllegalStateException => Unauthorized(ex.getMessage)
+              case e: IllegalStateException => Unauthorized(e.getMessage)
             }
         }).getOrElse(Future.successful(BadRequest("No parameters supplied")))
       } else {
