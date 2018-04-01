@@ -23,7 +23,9 @@ lazy val server = project
       "org.webjars" % "jquery" % "3.3.1-1",
       "org.webjars.npm" % "popper.js" % "1.14.0",
       //Scala
+      ws,
       guice,
+      ehcache,
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
       "com.vmunier" %% "scalajs-scripts" % "1.1.1",
       "org.webjars" %% "webjars-play" % "2.6.3",
