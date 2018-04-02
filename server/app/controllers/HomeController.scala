@@ -1,24 +1,26 @@
 package controllers
 
 import javax.inject._
-import play.api._
 import play.api.mvc._
+import services.AuthService
 
-/**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
-  */
+import scala.concurrent.ExecutionContext.Implicits.global
+
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(
+    cc: ControllerComponents,
+    authService: AuthService
+) extends AbstractController(cc) {
 
-  /**
-    * Create an Action to render an HTML page.
-    *
-    * The configuration in the `routes` file means that this method
-    * will be called when the application receives a `GET` request with
-    * a path of `/`.
-    */
-  def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index("Welcome to Wintacky project!")(views.html.welcome()(views.html.cards(Nil))))
+  def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    authService
+      .getUser(request.session.get("accessToken"))
+      .map { maybeUser =>
+        Ok(
+          views.html
+            .index("Welcome to Wintacky project!", maybeUser.isDefined)(views.html.welcome()(views.html.cards(Nil)))
+        )
+      }
+
   }
 }

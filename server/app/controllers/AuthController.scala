@@ -4,17 +4,17 @@ import config.AuthConfiguration
 import javax.inject.{Inject, Singleton}
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
-import services.TokenService
+import services.AuthService
 import utils.RandomUtil
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class AuthController @Inject()(
     cc: ControllerComponents,
     authConfig: AuthConfiguration,
-    tokenService: TokenService,
+    tokenService: AuthService,
     cache: SyncCacheApi
 ) extends AbstractController(cc) {
 
@@ -52,7 +52,6 @@ class AuthController @Inject()(
             .getToken(code)
             .map {
               case (idToken, accessToken) =>
-                cache.set(idToken + "profile", true)
                 Redirect(routes.HomeController.index())
                   .withSession(
                     "idToken"     -> idToken,

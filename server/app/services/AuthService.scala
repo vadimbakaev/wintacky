@@ -3,16 +3,19 @@ package services
 import com.google.inject.Inject
 import config.AuthConfiguration
 import javax.inject.Singleton
+import play.api.Logger
+import play.api.cache.AsyncCacheApi
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
-class TokenService @Inject()(
+class AuthService @Inject()(
     config: AuthConfiguration,
+    cache: AsyncCacheApi,
     ws: WSClient
 ) {
 
@@ -41,5 +44,32 @@ class TokenService @Inject()(
     }
 
   }
+
+  def getUser(accessToken: Option[String]): Future[Option[JsValue]] =
+    (for {
+      accessToken <- accessToken
+    } yield {
+      cache
+        .get[JsValue](s"accessToken_$accessToken")
+        .flatMap {
+          case None =>
+            ws.url(s"https://${config.domain}/userinfo")
+              .withQueryStringParameters("access_token" -> accessToken)
+              .get()
+              .flatMap {
+                case ok if ok.status == 200 =>
+                  Logger.info(s"User profile: ${ok.json}")
+                  cache.set(s"accessToken_$accessToken", ok.json)
+                  Future.successful(Some(ok.json))
+                case fail =>
+                  Logger.error(s"Unexpected response : ${fail.body}")
+                  Future.successful(None)
+              }
+          case value =>
+            Future.successful(value)
+        }
+    }).getOrElse(
+      Future.successful(None)
+    )
 
 }
