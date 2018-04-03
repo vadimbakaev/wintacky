@@ -19,9 +19,12 @@ object LiveEvent {
 case class NewLiveEvent(
     name: String,
     description: String,
+    webSite: String,
+    image: String,
     address: Address,
     location: Location,
-    tags: Seq[String],
+    tags: Set[String],
+    speakers: Set[String],
     rating: String
 )
 
