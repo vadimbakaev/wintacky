@@ -13,7 +13,7 @@ class SearchController @Inject()(
     authService: AuthService
 ) extends AbstractController(cc) {
 
-  def search(key: Option[String]): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+  def search(key: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     searchService
       .search(key)
       .flatMap(

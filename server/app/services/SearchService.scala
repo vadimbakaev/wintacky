@@ -20,7 +20,7 @@ import scala.util.Try
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
-  def search(key: Option[String]): Future[Seq[LiveEvent]]
+  def search(key: String): Future[Seq[LiveEvent]]
 }
 
 @Singleton
@@ -39,26 +39,21 @@ class SearchServiceImpl @Inject()(
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
   )
 
-  override def search(maybeKey: Option[String]): Future[Seq[LiveEvent]] = maybeKey match {
-    case None =>
-      Future.successful(Nil)
-    case Some(key) =>
-      Future {
+  override def search(key: String): Future[Seq[LiveEvent]] =
+    Future {
+      val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
+      val searchRequest = new SearchRequest()
+        .indices("wintacky")
+        .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(key)))
 
-        val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
-        val searchRequest = new SearchRequest()
-          .indices("wintacky")
-          .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(key)))
+      val response: SearchResponse = client.search(searchRequest)
 
-        val response: SearchResponse = client.search(searchRequest)
+      Try(client.close())
 
-        Try(client.close())
-
-        response.getHits.getHits
-          .filter(_.getType == "live-event")
-          .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEvent].asOpt)
-          .toSeq
-      }
-  }
+      response.getHits.getHits
+        .filter(_.getType == "live-event")
+        .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEvent].asOpt)
+        .toSeq
+    }
 
 }
