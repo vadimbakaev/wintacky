@@ -42,26 +42,22 @@ class AuthController @Inject()(
     ).withNewSession
   }
 
-  def callback(codeOpt: Option[String] = None, stateOpt: Option[String] = None): Action[AnyContent] = Action.async {
+  def callback(code: String, state: String): Action[AnyContent] = Action.async {
     implicit request: Request[AnyContent] =>
-      if (stateOpt == cache.get("state")) {
-        (for {
-          code <- codeOpt
-        } yield {
-          tokenService
-            .getToken(code)
-            .map {
-              case (idToken, accessToken) =>
-                Redirect(routes.HomeController.index())
-                  .withSession(
-                    "idToken"     -> idToken,
-                    "accessToken" -> accessToken
-                  )
-            }
-            .recover {
-              case e: IllegalStateException => Unauthorized(e.getMessage)
-            }
-        }).getOrElse(Future.successful(BadRequest("No parameters supplied")))
+      if (cache.get("state").contains(state)) {
+        tokenService
+          .getToken(code)
+          .map {
+            case (idToken, accessToken) =>
+              Redirect(routes.HomeController.index())
+                .withSession(
+                  "idToken"     -> idToken,
+                  "accessToken" -> accessToken
+                )
+          }
+          .recover {
+            case e: IllegalStateException => Unauthorized(e.getMessage)
+          }
       } else {
         Future.successful(BadRequest("Invalid state parameter"))
       }
