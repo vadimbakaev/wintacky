@@ -17,6 +17,7 @@ import play.api.libs.json.Json
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
+import cats.implicits._
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
@@ -51,7 +52,7 @@ class SearchServiceImpl @Inject()(
       Try(client.close())
 
       response.getHits.getHits
-        .filter(_.getType == "live-event")
+        .filter(_.getType === "live-event")
         .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEvent].asOpt)
         .toSeq
     }

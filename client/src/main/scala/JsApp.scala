@@ -6,6 +6,8 @@ import org.scalajs.dom.raw.KeyboardEvent
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js.Dynamic.literal
 import scala.scalajs.js.annotation.JSExport
+import cats.implicits._
+
 
 object JsApp {
 
@@ -21,8 +23,6 @@ object JsApp {
     def updateElementById(id: String, response: XMLHttpRequest): Unit = {
       val oldElement = document.getElementById(id)
       val newElement = response.responseXML.getElementById(id)
-      println("Old: " + oldElement)
-      println("New: " + newElement)
       oldElement.innerHTML = newElement.innerHTML
     }
 
@@ -34,7 +34,6 @@ object JsApp {
         .foreach { response: XMLHttpRequest =>
           val starter = document.getElementById("starter-block").asInstanceOf[Div]
           starter.style.display = "none"
-          println(starter)
 
           updateElementById("search-result", response)
         }
@@ -44,7 +43,7 @@ object JsApp {
       }
     }
 
-    searchInput.onkeypress = (e: KeyboardEvent) => if ("Enter" == e.key) reload()
+    searchInput.onkeypress = (e: KeyboardEvent) => if ("Enter" === e.key) reload()
     searchButton.onclick = (e: Event) => reload()
 
   }

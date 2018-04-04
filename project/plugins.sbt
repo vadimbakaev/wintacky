@@ -6,6 +6,8 @@ resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releas
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")
 
+addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.0")
+
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.2")
 
 addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.2.2")
@@ -16,8 +18,6 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
 //> sbt dependencyUpdates
-
-
 
 // Scala.js plugins
 

@@ -11,6 +11,7 @@ import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import cats.implicits._
 
 @Singleton
 class AuthService @Inject()(
@@ -57,7 +58,7 @@ class AuthService @Inject()(
               .withQueryStringParameters("access_token" -> accessToken)
               .get()
               .flatMap {
-                case ok if ok.status == 200 =>
+                case ok if ok.status === 200 =>
                   Logger.info(s"User profile: ${ok.json}")
                   cache.set(s"accessToken_$accessToken", ok.json)
                   Future.successful(Some(ok.json))

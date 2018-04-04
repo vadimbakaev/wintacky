@@ -27,11 +27,13 @@ lazy val server = project
       guice,
       ehcache,
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+      "org.typelevel" %% "cats-core" % "1.1.0",
       "com.vmunier" %% "scalajs-scripts" % "1.1.2",
       "org.webjars" %% "webjars-play" % "2.6.3",
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),
+    scalacOptions += "-Ypartial-unification",
     pipelineStages in Assets := Seq(scalaJSPipeline),
     pipelineStages := Seq(digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
@@ -50,7 +52,9 @@ lazy val client = project
     scalaJSUseMainModuleInitializer := true,
     scalaJSUseMainModuleInitializer in Test := false,
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
+    scalacOptions += "-Ypartial-unification",
     libraryDependencies ++= Seq(
+      "org.typelevel" %%% "cats-core" % "1.1.0",
       "org.scala-js" %%% "scalajs-dom" % "0.9.5",
       "com.lihaoyi" %%% "scalatags" % "0.6.7"
     )
