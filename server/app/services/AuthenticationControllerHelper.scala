@@ -13,15 +13,6 @@ class AuthenticationControllerHelper @Inject()(
     actionBuilder: DefaultActionBuilder
 ) {
 
-  def authenticated(f: Request[AnyContent] => Result): Action[AnyContent] = actionBuilder { request =>
-    request.session
-      .get("idToken")
-      .filter(idToken => cache.get[Boolean](idToken + "profile").getOrElse(false))
-      .map(_ => f(request))
-      .orElse(Some(Results.Redirect(routes.HomeController.index())))
-      .get
-  }
-
   def authenticatedAsync(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = actionBuilder.async {
     request =>
       request.session
