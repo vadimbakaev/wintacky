@@ -28,13 +28,13 @@ class SearchServiceImpl @Inject()(
     configuration: Configuration
 ) extends SearchService {
 
-  private lazy val elasticHost: String   = configuration.get[String]("elastic.host")
-  private lazy val elasticPort: Int      = configuration.get[Int]("elastic.port")
-  private lazy val elasticScheme: String = configuration.get[String]("elastic.scheme")
-  private lazy val accessKey: String     = configuration.get[String]("elastic.access.key")
-  private lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
-  private lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
-  private lazy val authorization: BasicHeader = new BasicHeader(
+  private[this] lazy val elasticHost: String   = configuration.get[String]("elastic.host")
+  private[this] lazy val elasticPort: Int      = configuration.get[Int]("elastic.port")
+  private[this] lazy val elasticScheme: String = configuration.get[String]("elastic.scheme")
+  private[this] lazy val accessKey: String     = configuration.get[String]("elastic.access.key")
+  private[this] lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
+  private[this] lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
+  private[this] lazy val authorization: BasicHeader = new BasicHeader(
     "Authorization",
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
   )
