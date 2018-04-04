@@ -3,6 +3,7 @@ package utils
 import java.math.BigInteger
 import java.security.SecureRandom
 
+// scalastyle:off magic.number
 object RandomUtil {
   private val random = new SecureRandom()
 

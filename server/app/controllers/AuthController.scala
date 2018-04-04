@@ -18,7 +18,7 @@ class AuthController @Inject()(
     cache: SyncCacheApi
 ) extends AbstractController(cc) {
 
-  def login() = Action { implicit request: Request[AnyContent] =>
+  def login(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val state = RandomUtil.alphanumeric()
     cache.set("state", state)
 
@@ -36,7 +36,7 @@ class AuthController @Inject()(
     Redirect(s"https://${authConfig.domain}/$query")
   }
 
-  def logout = Action {
+  def logout: Action[AnyContent] = Action {
     Redirect(
       s"https://${authConfig.domain}/v2/logout?client_id=${authConfig.clientId}&returnTo=${authConfig.logoutPage}"
     ).withNewSession
