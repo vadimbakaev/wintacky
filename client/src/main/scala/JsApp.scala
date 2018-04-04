@@ -9,13 +9,11 @@ import scala.scalajs.js.annotation.JSExport
 
 object JsApp {
 
-  var key: String = _
-
   @JSExport
   def main(args: Array[String]): Unit = {
     println("JsApp Started")
 
-    val searchInput: Input = document.getElementById("search-input").asInstanceOf[Input]
+    val searchInput: Input   = document.getElementById("search-input").asInstanceOf[Input]
     val searchButton: Button = document.getElementById("search-btn").asInstanceOf[Button]
 
     def getSearchKey = searchInput.value
@@ -31,7 +29,8 @@ object JsApp {
     def reload(key: String = getSearchKey, pushState: Boolean = true): Unit = {
       val searchPath = s"/search?key=$key"
 
-      Ajax.get(searchPath, responseType = "document")
+      Ajax
+        .get(searchPath, responseType = "document")
         .foreach { response: XMLHttpRequest =>
           val starter = document.getElementById("starter-block").asInstanceOf[Div]
           starter.style.display = "none"
