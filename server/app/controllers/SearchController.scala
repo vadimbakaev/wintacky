@@ -3,6 +3,7 @@ package controllers
 import javax.inject._
 import play.api.mvc._
 import services.{AuthService, SearchService}
+import utils.ClientParamsSanitizer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -14,8 +15,9 @@ class SearchController @Inject()(
 ) extends AbstractController(cc) {
 
   def search(key: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    val disinfectedKey = ClientParamsSanitizer(key)
     searchService
-      .search(key)
+      .search(disinfectedKey)
       .flatMap(
         liveEvents =>
           authService
@@ -23,7 +25,7 @@ class SearchController @Inject()(
             .map { maybeUser =>
               Ok(
                 views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(
-                  views.html.welcome(key)(views.html.cards(liveEvents))
+                  views.html.welcome(disinfectedKey)(views.html.cards(liveEvents))
                 )
               )
           }
