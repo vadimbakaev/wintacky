@@ -1,5 +1,7 @@
 package models
 
+import java.time.ZonedDateTime
+
 import play.api.libs.json.{Format, Json}
 
 case class LiveEvent(
@@ -25,6 +27,8 @@ case class NewLiveEvent(
     location: Location,
     tags: Set[String],
     speakers: Set[String],
+    languages: Set[String],
+    prices: Set[Price],
     rating: String
 )
 
@@ -38,4 +42,14 @@ case class Address(
 case class Location(
     lat: Long,
     lon: Long
+)
+
+case class Price(
+    name: String,
+    description: Option[String],
+    value: BigDecimal,
+    start: ZonedDateTime,
+    end: ZonedDateTime,
+    priceType: String,
+    days: Set[ZonedDateTime]
 )
