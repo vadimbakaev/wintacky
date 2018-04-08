@@ -28,7 +28,6 @@ class AuthController @Inject()(
     val queryString: Map[String, Seq[String]] = Map(
       AuthController.ClientIdKey     -> Seq(authConfig.clientId),
       AuthController.RedirectUriKey  -> Seq(authConfig.callbackURL),
-//      AuthController.AudienceKey     -> Seq(authConfig.audience),
       AuthController.ResponseTypeKey -> Seq("code"),
       AuthController.ScopeKey        -> Seq("openid profile"),
       AuthController.StateKey        -> Seq(state)

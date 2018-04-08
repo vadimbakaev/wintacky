@@ -52,26 +52,28 @@ class AuthService @Inject()(
   def recoverUser(accessToken: Option[String]): Future[Option[JsValue]] =
     accessToken
       .map(
-        accessToken =>
+        accessToken => {
+          val accessTokenKey = s"accessToken_$accessToken"
           cache
-            .get[JsValue](s"accessToken_$accessToken")
+            .get[JsValue](accessTokenKey)
             .flatMap {
-              case None =>
+              case None    =>
                 ws.url(userInfoUrl)
                   .withQueryStringParameters(AuthService.AccessTokenKey -> accessToken)
                   .get()
                   .flatMap {
                     case ok if ok.status === HttpStatus.SC_OK =>
                       Logger.info(s"User profile: ${ok.json}")
-                      cache.set(s"accessToken_$accessToken", ok.json)
+                      cache.set(accessTokenKey, ok.json)
                       Future.successful(Some(ok.json))
-                    case fail @ _ =>
+                    case fail@_                               =>
                       Logger.error(s"Unexpected response : ${fail.body}")
                       Future.successful(None)
                   }
-              case value @ _ =>
+              case value@_ =>
                 Future.successful(value)
-          }
+            }
+        }
       )
       .getOrElse(Future.successful(None))
 

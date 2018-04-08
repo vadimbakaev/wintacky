@@ -4,7 +4,7 @@ import java.util.Base64
 
 import com.google.inject.{ImplementedBy, Singleton}
 import javax.inject.Inject
-import models.LiveEvent
+import models.LiveEventStub
 import org.apache.http.{HttpHeaders, HttpHost}
 import org.apache.http.message.BasicHeader
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
@@ -21,7 +21,7 @@ import cats.implicits._
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
-  def search(key: String): Future[Seq[LiveEvent]]
+  def search(key: String): Future[Seq[LiveEventStub]]
 }
 
 @Singleton
@@ -35,13 +35,13 @@ class SearchServiceImpl @Inject()(
   private[this] lazy val accessKey: String     = configuration.get[String]("elastic.access.key")
   private[this] lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
   private[this] lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
-  private[this] lazy val loginPassword         = s"$accessKey:$accessSecret"
+  private[this] lazy val loginPassword         = accessKey + ":" + accessSecret
   private[this] lazy val authorization: BasicHeader = new BasicHeader(
     HttpHeaders.AUTHORIZATION,
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(loginPassword.getBytes)}"
   )
 
-  override def search(key: String): Future[Seq[LiveEvent]] =
+  override def search(key: String): Future[Seq[LiveEventStub]] =
     Future {
       val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
       val searchRequest = new SearchRequest()
@@ -54,7 +54,7 @@ class SearchServiceImpl @Inject()(
 
       response.getHits.getHits
         .filter(_.getType === "live-event")
-        .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEvent].asOpt)
+        .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEventStub].asOpt)
         .toSeq
     }
 
