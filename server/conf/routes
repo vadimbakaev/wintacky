@@ -5,7 +5,7 @@
 
 GET     /login                      controllers.AuthController.login
 GET     /logout                     controllers.AuthController.logout
-GET     /callback                   controllers.AuthController.callback(code: String, state: String)
+GET     /callback                   controllers.AuthController.callback(code: String = "", state: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
