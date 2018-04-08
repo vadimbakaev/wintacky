@@ -53,9 +53,9 @@ class AuthService @Inject()(
     accessToken
       .map(
         accessToken => {
-          val accessTokenKey = s"accessToken_$accessToken"
+          val userKey = s"aToken_$accessToken"
           cache
-            .get[JsValue](accessTokenKey)
+            .get[JsValue](userKey)
             .flatMap {
               case None    =>
                 ws.url(userInfoUrl)
@@ -64,7 +64,7 @@ class AuthService @Inject()(
                   .flatMap {
                     case ok if ok.status === HttpStatus.SC_OK =>
                       Logger.info(s"User profile: ${ok.json}")
-                      cache.set(accessTokenKey, ok.json)
+                      cache.set(userKey, ok.json)
                       Future.successful(Some(ok.json))
                     case fail@_                               =>
                       Logger.error(s"Unexpected response : ${fail.body}")
