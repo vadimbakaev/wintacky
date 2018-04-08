@@ -65,11 +65,11 @@ class AuthService @Inject()(
                       Logger.info(s"User profile: ${ok.json}")
                       cache.set(s"accessToken_$accessToken", ok.json)
                       Future.successful(Some(ok.json))
-                    case fail =>
+                    case fail @ _ =>
                       Logger.error(s"Unexpected response : ${fail.body}")
                       Future.successful(None)
                   }
-              case value =>
+              case value @ _ =>
                 Future.successful(value)
           }
       )
