@@ -5,7 +5,7 @@ import java.util.Base64
 import com.google.inject.{ImplementedBy, Singleton}
 import javax.inject.Inject
 import models.LiveEvent
-import org.apache.http.HttpHost
+import org.apache.http.{HttpHeaders, HttpHost}
 import org.apache.http.message.BasicHeader
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RestClient, RestHighLevelClient}
@@ -36,7 +36,7 @@ class SearchServiceImpl @Inject()(
   private[this] lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
   private[this] lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
   private[this] lazy val authorization: BasicHeader = new BasicHeader(
-    "Authorization",
+    HttpHeaders.AUTHORIZATION,
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
   )
 
