@@ -57,7 +57,7 @@ class AuthService @Inject()(
           cache
             .get[JsValue](userKey)
             .flatMap {
-              case None    =>
+              case None =>
                 ws.url(userInfoUrl)
                   .withQueryStringParameters(AuthService.AccessTokenKey -> accessToken)
                   .get()
@@ -66,11 +66,11 @@ class AuthService @Inject()(
                       Logger.info(s"User profile: ${ok.json}")
                       cache.set(userKey, ok.json)
                       Future.successful(Some(ok.json))
-                    case fail@_                               =>
+                    case fail @ _ =>
                       Logger.error(s"Unexpected response : ${fail.body}")
                       Future.successful(None)
                   }
-              case value@_ =>
+              case value @ _ =>
                 Future.successful(value)
             }
         }
