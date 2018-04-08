@@ -49,8 +49,8 @@ class AuthService @Inject()(
           )
       }
 
-  def recoverUser(accessToken: Option[String]): Future[Option[JsValue]] =
-    accessToken
+  def recoverUser(accessTokenOpt: Option[String]): Future[Option[JsValue]] =
+    accessTokenOpt
       .map(
         accessToken => {
           val userKey = s"aToken_$accessToken"
