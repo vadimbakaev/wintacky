@@ -21,7 +21,7 @@ class SearchController @Inject()(
       .flatMap(
         liveEvents =>
           authService
-            .getUser(request.session.get("accessToken"))
+            .recoverUser(request.session.get("accessToken"))
             .map { maybeUser =>
               Ok(
                 views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(

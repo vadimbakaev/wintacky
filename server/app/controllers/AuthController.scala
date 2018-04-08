@@ -46,7 +46,7 @@ class AuthController @Inject()(
     implicit request: Request[AnyContent] =>
       if (cache.get("state").contains(state)) {
         tokenService
-          .getToken(code)
+          .recoverToken(code)
           .map {
             case (idToken, accessToken) =>
               Redirect(routes.HomeController.index())

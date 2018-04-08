@@ -14,7 +14,7 @@ class HomeController @Inject()(
 
   def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     authService
-      .getUser(request.session.get("accessToken"))
+      .recoverUser(request.session.get("accessToken"))
       .map { maybeUser =>
         Ok(
           views.html
