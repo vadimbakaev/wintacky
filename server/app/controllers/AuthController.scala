@@ -9,6 +9,7 @@ import utils.RandomUtil
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import cats.implicits._
 
 @Singleton
 class AuthController @Inject()(
@@ -46,18 +47,23 @@ class AuthController @Inject()(
     Redirect(baseUrl + "/v2/logout", queryString).withNewSession
   }
 
-  def callback(code: String, state: String): Action[AnyContent] = Action.async {
+  def callback(codeOpt: Option[String] = None, stateOpt: Option[String] = None): Action[AnyContent] = Action.async {
     implicit request: Request[AnyContent] =>
-      if (cache.get(AuthController.CacheStateKey).contains(state)) {
-        tokenService
-          .recoverToken(code)
-          .map {
-            case (idToken, accessToken) =>
-              Redirect(routes.HomeController.index()).withSession("idToken" -> idToken, "accessToken" -> accessToken)
+      if (cache.get[String](AuthController.CacheStateKey) === stateOpt) {
+        codeOpt
+          .map { code =>
+            tokenService
+              .recoverToken(code)
+              .map {
+                case (idToken, accessToken) =>
+                  Redirect(routes.HomeController.index())
+                    .withSession("idToken" -> idToken, "accessToken" -> accessToken)
+              }
+              .recover {
+                case e @ _ => Unauthorized(e.getMessage)
+              }
           }
-          .recover {
-            case e @ _ => Unauthorized(e.getMessage)
-          }
+          .getOrElse(Future.successful(BadRequest("No parameters supplied")))
       } else {
         Future.successful(BadRequest("Invalid state parameter"))
       }
