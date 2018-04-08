@@ -12,6 +12,8 @@ import play.api.libs.ws.WSClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import cats.implicits._
+import models.request.external.AccessTokenRequest
+import models.responses.external.AccessTokenResponse
 import org.apache.http.HttpStatus
 
 @Singleton
@@ -21,35 +23,31 @@ class AuthService @Inject()(
     ws: WSClient
 ) {
 
-  private lazy val tokenUrl    = s"https://${config.domain}/oauth/token"
-  private lazy val userInfoUrl = s"https://${config.domain}/userinfo"
+  private[this] lazy val tokenUrl    = s"https://${config.domain}/oauth/token"
+  private[this] lazy val userInfoUrl = s"https://${config.domain}/userinfo"
 
-  def recoverToken(code: String): Future[(String, String)] = {
-
-    val tokenResponse = ws
-      .url(tokenUrl)
+  def recoverToken(code: String): Future[(String, String)] =
+    ws.url(tokenUrl)
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
       .post(
-        Json.obj(
-          "client_id"     -> config.clientId,
-          "client_secret" -> config.secret,
-          "redirect_uri"  -> config.callbackURL,
-          "code"          -> code,
-          "grant_type"    -> "authorization_code",
-          "audience"      -> config.audience
+        Json.toJson(
+          AccessTokenRequest(
+            client_id = config.clientId,
+            client_secret = config.secret,
+            redirect_uri = config.callbackURL,
+            audience = config.audience,
+            code = code
+          )
         )
       )
-
-    tokenResponse.flatMap { response =>
-      (for {
-        idToken     <- (response.json \ AuthService.IdTokenKey).asOpt[String]
-        accessToken <- (response.json \ AuthService.AccessTokenKey).asOpt[String]
-      } yield {
-        Future.successful((idToken, accessToken))
-      }).getOrElse(Future.failed[(String, String)](new IllegalStateException("Tokens not sent")))
-    }
-
-  }
+      .map { response =>
+        response.json
+          .validate[AccessTokenResponse]
+          .fold(
+            _ => throw new IllegalStateException("Tokens not sent"),
+            tokenResponse => (tokenResponse.id_token, tokenResponse.access_token)
+          )
+      }
 
   def recoverUser(accessToken: Option[String]): Future[Option[JsValue]] =
     accessToken
