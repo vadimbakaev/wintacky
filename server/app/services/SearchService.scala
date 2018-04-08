@@ -35,9 +35,10 @@ class SearchServiceImpl @Inject()(
   private[this] lazy val accessKey: String     = configuration.get[String]("elastic.access.key")
   private[this] lazy val accessSecret: String  = configuration.get[String]("elastic.access.secret")
   private[this] lazy val host: HttpHost        = new HttpHost(elasticHost, elasticPort, elasticScheme)
+  private[this] lazy val loginPassword         = s"$accessKey:$accessSecret"
   private[this] lazy val authorization: BasicHeader = new BasicHeader(
     HttpHeaders.AUTHORIZATION,
-    s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(s"$accessKey:$accessSecret".getBytes)}"
+    s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(loginPassword.getBytes)}"
   )
 
   override def search(key: String): Future[Seq[LiveEvent]] =
