@@ -22,15 +22,15 @@ class AuthController @Inject()(
 
   def login(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val state = RandomUtil.alphanumeric()
-    cache.set(AuthController.StateKey, state)
+    cache.set(AuthController.CacheStateKey, state)
 
     val queryString: Map[String, Seq[String]] = Map(
-      AuthController.ClientIdQueryKey     -> Seq(authConfig.clientId),
-      AuthController.RedirectUriQueryKey  -> Seq(authConfig.callbackURL),
-      AuthController.AudienceQueryKey     -> Seq(authConfig.audience),
-      AuthController.ResponseTypeQueryKey -> Seq("code"),
-      AuthController.ScopeQueryKey        -> Seq("openid profile"),
-      AuthController.StateQueryKey        -> Seq(state)
+      AuthController.ClientIdKey     -> Seq(authConfig.clientId),
+      AuthController.RedirectUriKey  -> Seq(authConfig.callbackURL),
+      AuthController.AudienceKey     -> Seq(authConfig.audience),
+      AuthController.ResponseTypeKey -> Seq("code"),
+      AuthController.ScopeKey        -> Seq("openid profile"),
+      AuthController.StateKey        -> Seq(state)
     )
 
     Redirect(baseUrl + "/authorize", queryString)
@@ -39,8 +39,8 @@ class AuthController @Inject()(
   def logout: Action[AnyContent] = Action {
 
     val queryString: Map[String, Seq[String]] = Map(
-      AuthController.ClientIdQueryKey -> Seq(authConfig.clientId),
-      AuthController.ReturnToQueryKey -> Seq(authConfig.logoutPage)
+      AuthController.ClientIdKey -> Seq(authConfig.clientId),
+      AuthController.ReturnToKey -> Seq(authConfig.logoutPage)
     )
 
     Redirect(baseUrl + "/v2/logout", queryString).withNewSession
@@ -48,7 +48,7 @@ class AuthController @Inject()(
 
   def callback(code: String, state: String): Action[AnyContent] = Action.async {
     implicit request: Request[AnyContent] =>
-      if (cache.get(AuthController.StateKey).contains(state)) {
+      if (cache.get(AuthController.CacheStateKey).contains(state)) {
         tokenService
           .recoverToken(code)
           .map {
@@ -56,7 +56,7 @@ class AuthController @Inject()(
               Redirect(routes.HomeController.index()).withSession("idToken" -> idToken, "accessToken" -> accessToken)
           }
           .recover {
-            case e => Unauthorized(e.getMessage)
+            case e @ _ => Unauthorized(e.getMessage)
           }
       } else {
         Future.successful(BadRequest("Invalid state parameter"))
@@ -66,13 +66,12 @@ class AuthController @Inject()(
 }
 
 object AuthController {
-  val StateKey: String = "state"
-
-  val ClientIdQueryKey: String     = "client_id"
-  val RedirectUriQueryKey: String  = "redirect_uri"
-  val AudienceQueryKey: String     = "audience"
-  val ResponseTypeQueryKey: String = "response_type"
-  val ScopeQueryKey: String        = "scope"
-  val StateQueryKey: String        = "state"
-  val ReturnToQueryKey: String     = "returnTo"
+  val CacheStateKey: String   = "cache_state"
+  val ClientIdKey: String     = "client_id"
+  val RedirectUriKey: String  = "redirect_uri"
+  val AudienceKey: String     = "audience"
+  val ResponseTypeKey: String = "response_type"
+  val ScopeKey: String        = "scope"
+  val StateKey: String        = "state"
+  val ReturnToKey: String     = "returnTo"
 }
