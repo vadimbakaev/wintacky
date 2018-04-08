@@ -18,7 +18,7 @@ object JsApp {
     val searchInput: Input   = document.getElementById("search-input").asInstanceOf[Input]
     val searchButton: Button = document.getElementById("search-btn").asInstanceOf[Button]
 
-    def getSearchKey = searchInput.value
+    def recoverSearchKey = searchInput.value
 
     def updateElementById(id: String, response: XMLHttpRequest): Unit = {
       val oldElement = document.getElementById(id)
@@ -26,7 +26,7 @@ object JsApp {
       oldElement.innerHTML = newElement.innerHTML
     }
 
-    def reload(key: String = getSearchKey, pushState: Boolean = true): Unit = {
+    def reload(key: String = recoverSearchKey, pushState: Boolean = true): Unit = {
       val searchPath = s"/search?key=$key"
 
       Ajax
