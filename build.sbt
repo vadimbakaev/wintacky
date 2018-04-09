@@ -16,6 +16,7 @@ lazy val server = project
   .settings(
     libraryDependencies ++= Seq(
       //Java
+      "org.logback-extensions" % "logback-ext-loggly" % "0.1.5",
       "org.elasticsearch" % "elasticsearch" % "6.0.1",
       "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "6.0.1",
       "org.webjars" % "bootstrap" % "4.0.0-2",
