@@ -11,7 +11,7 @@ val commonSettings = Seq(
 
 
 lazy val server = project
-  .enablePlugins(PlayScala)
+  .enablePlugins(PlayScala, PlayAkkaHttp2Support)
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
