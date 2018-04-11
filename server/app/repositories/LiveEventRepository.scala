@@ -3,7 +3,7 @@ package repositories
 import com.google.inject.ImplementedBy
 import com.mongodb.ConnectionString
 import javax.inject.{Inject, Singleton}
-import models.LiveEvent
+import models.{Address, LiveEvent, Location, Price}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
@@ -45,7 +45,10 @@ class LiveEventRepositoryImpl @Inject()(
 
   private[this] lazy val database: MongoDatabase = MongoClient(clientSettings)
     .getDatabase(databaseName)
-    .withCodecRegistry(fromRegistries(fromProviders(classOf[LiveEvent]), DEFAULT_CODEC_REGISTRY))
+    .withCodecRegistry(
+      fromRegistries(fromProviders(classOf[LiveEvent], classOf[Address], classOf[Location], classOf[Price]),
+                     DEFAULT_CODEC_REGISTRY)
+    )
 
   private[this] lazy val collection: MongoCollection[LiveEvent] = initCollection(database)
 
