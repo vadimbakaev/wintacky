@@ -33,7 +33,15 @@ lazy val server = project
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),
-    scalacOptions += "-Ypartial-unification",
+    scalacOptions ++= Seq(
+      "-Ypartial-unification",
+      "-Xfatal-warnings",
+      "-encoding",
+      "utf8",
+      "-Xfatal-warnings",
+      "-deprecation",
+      "-unchecked"
+    ),
     pipelineStages in Assets := Seq(scalaJSPipeline),
     pipelineStages := Seq(digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
