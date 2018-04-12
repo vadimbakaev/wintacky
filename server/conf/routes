@@ -12,3 +12,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 GET     /                           controllers.HomeController.index
 GET     /search                     controllers.SearchController.search(key: String)
+GET     /create                     controllers.CreateEventController.create
