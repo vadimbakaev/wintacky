@@ -19,7 +19,7 @@ class AuthenticationControllerHelper @Inject()(
     request =>
       request.session
         .get("idToken")
-        .flatMap(idToken => cache.get[JsValue](idToken + "profile"))
+//        .flatMap(idToken => cache.get[JsValue](idToken + "profile"))
         .map(_ => f(request))
         .orElse(Some(Future.successful(Results.Redirect(routes.HomeController.index()))))
         .get
