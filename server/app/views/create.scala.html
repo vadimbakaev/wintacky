@@ -1,12 +1,16 @@
+@(eventForm: Form[Event])(implicit req: RequestHeader, messagesProvider: MessagesProvider)
+@import helper._
 <div class="container-fluid justify-content-center">
 
     <div class="row justify-content-center mx-auto">
-        <form>
+        @form(CSRF(routes.AddEventController.add())) {
+        @CSRF.formField
 
-            <div class="form-row">
+        <div class="form-row">
                 <div class="col-md-6">
                     <label for="validationDefault01">Event Name</label>
                     <input type="text" class="form-control" id="validationDefault01" placeholder="Scala Event" required>
+                    @inputText(eventForm("name"), 'placeholder -> "Scala Event")
                 </div>
                 <div class="col-md-6">
                     <label for="validationDefaultUsername">Web site</label>
@@ -15,10 +19,22 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="validationDefault02">Description</label>
                     <input type="text" class="form-control" id="validationDefault02"
                            placeholder="The World conference on Scala" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationDefault11">Date</label>
+                    <input type="text" class="form-control" id="validationDefault11"
+                           placeholder="September 14th-15th, 2018" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <label for="validationDefault08">Image URL</label>
+                    <input type="text" class="form-control" id="validationDefault08"
+                           placeholder="http://res.cloudinary.com/hbhnckuqw/image/upload/v1523647521/1a55ca71-6f3b-4061-9f73-0ebf8190476c_5C593f250c-dd60-4f90-8f1d-598d58f7d122.png" required>
                 </div>
             </div>
             <div class="form-row">
@@ -49,8 +65,9 @@
                     </label>
                 </div>
             </div>
+
             <button class="btn btn-primary" type="submit">Submit form</button>
-        </form>
+        }
 
     </div>
 

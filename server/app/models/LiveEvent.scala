@@ -8,12 +8,10 @@ case class LiveEvent(
     webSite: String,
     image: String,
     address: Address,
-    location: Location,
     tags: Set[String],
     speakers: Set[String],
     languages: Set[String],
-    prices: Set[Price],
-    rating: String
+    prices: Set[Price]
 )
 
 case class Address(
