@@ -37,8 +37,8 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="col-md-6">
-                @inputText(
+            <div class="col-md-12">
+                @textarea(
                 eventForm("description"),
                 '_label -> "Description",
                 'placeholder -> "The World conference on Scala",
@@ -46,7 +46,10 @@
                 'required -> true
                 )
             </div>
-            <div class="col-md-6">
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12">
                 @inputText(
                 eventForm("webSite"),
                 '_label -> "Web site",
@@ -56,6 +59,7 @@
                 )
             </div>
         </div>
+
         <div class="form-row">
             <div class="col-md-12">
                 @inputText(
