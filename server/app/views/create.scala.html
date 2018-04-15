@@ -1,4 +1,7 @@
-@(eventForm: Form[Event])(implicit req: RequestHeader, messagesProvider: MessagesProvider)
+@(
+    eventForm: Form[Event],
+    stateOptions: Seq[(String, String)] = utils.FormUtils.Countries
+)(implicit req: RequestHeader, messagesProvider: MessagesProvider)
 @import helper._
 <div class="container-fluid justify-content-center">
 
@@ -7,66 +10,112 @@
         @CSRF.formField
 
         <div class="form-row">
-                <div class="col-md-6">
-                    <label for="validationDefault01">Event Name</label>
-                    <input type="text" class="form-control" id="validationDefault01" placeholder="Scala Event" required>
-                    @inputText(eventForm("name"), 'placeholder -> "Scala Event")
-                </div>
-                <div class="col-md-6">
-                    <label for="validationDefaultUsername">Web site</label>
-                    <input type="text" class="form-control" id="validationDefaultUsername"
-                           placeholder="http://2018.scala-event.com" aria-describedby="inputGroupPrepend2" required>
-                </div>
+            <div class="col-md-4">
+                @inputText(
+                eventForm("name"),
+                '_label -> "Event Name",
+                'placeholder -> "Scala Event",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
-            <div class="form-row">
-                <div class="col-md-6">
-                    <label for="validationDefault02">Description</label>
-                    <input type="text" class="form-control" id="validationDefault02"
-                           placeholder="The World conference on Scala" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="validationDefault11">Date</label>
-                    <input type="text" class="form-control" id="validationDefault11"
-                           placeholder="September 14th-15th, 2018" required>
-                </div>
+            <div class="col-md-4">
+                @inputDate(
+                eventForm("startDate"),
+                '_label -> "Start Date",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
-            <div class="form-row">
-                <div class="col-md-12">
-                    <label for="validationDefault08">Image URL</label>
-                    <input type="text" class="form-control" id="validationDefault08"
-                           placeholder="http://res.cloudinary.com/hbhnckuqw/image/upload/v1523647521/1a55ca71-6f3b-4061-9f73-0ebf8190476c_5C593f250c-dd60-4f90-8f1d-598d58f7d122.png" required>
-                </div>
+            <div class="col-md-4">
+                @inputDate(
+                eventForm("endDate"),
+                '_label -> "End Date",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
-            <div class="form-row">
-                <div class="col-md-4">
-                    <label for="validationDefault04">State</label>
-                    <input type="text" class="form-control" id="validationDefault04" placeholder="State" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="validationDefault03">City</label>
-                    <input type="text" class="form-control" id="validationDefault03" placeholder="City" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="validationDefault06">Zip</label>
-                    <input type="text" class="form-control" id="validationDefault06" placeholder="Zip" required>
-                </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                @inputText(
+                eventForm("description"),
+                '_label -> "Description",
+                'placeholder -> "The World conference on Scala",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
-            <div class="form-row">
-                <div class="col-md-12">
-                    <label for="validationDefault07">Street</label>
-                    <input type="text" class="form-control" id="validationDefault07" placeholder="Street" required>
-                </div>
+            <div class="col-md-6">
+                @inputText(
+                eventForm("webSite"),
+                '_label -> "Web site",
+                'placeholder -> "http://2018.scala-event.com",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
-                    <label class="form-check-label" for="invalidCheck2">
-                        Agree to terms and conditions
-                    </label>
-                </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
+                eventForm("imageUrl"),
+                '_label -> "Image URL",
+                'placeholder -> "http://res.cloudinary.com/hbhnckuqw/image/upload/v1523647521/1a55ca71-6f3b-4061-9f73-0ebf8190476c_5C593f250c-dd60-4f90-8f1d-598d58f7d122.png",
+                'class -> "form-control",
+                'required -> true
+                )
             </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4">
+                @select(
+                eventForm("state"),
+                options = stateOptions,
+                '_label -> "State",
+                'placeholder -> "Germany",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-6">
+                @inputText(
+                eventForm("city"),
+                '_label -> "City",
+                'placeholder -> "Berlin",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-2">
+                @inputText(
+                eventForm("zip"),
+                '_label -> "Zip",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
+                eventForm("street"),
+                '_label -> "Street",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-group">
+            @checkbox(
+            eventForm("termsAndConditions"),
+            '_label -> "Agree to terms and conditions",
+            'class -> "form-check",
+            'required -> true
+            )
+        </div>
 
-            <button class="btn btn-primary" type="submit">Submit form</button>
+        <button class="btn btn-primary" type="submit">Submit form</button>
         }
 
     </div>
