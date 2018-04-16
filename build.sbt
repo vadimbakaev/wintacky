@@ -10,7 +10,7 @@ val commonSettings = Seq(
 )
 
 lazy val server = project
-  .enablePlugins(PlayScala)
+  .enablePlugins(PlayScala, ScoverageSbtPlugin)
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
@@ -40,13 +40,16 @@ lazy val server = project
       "utf8",
       "-Xfatal-warnings",
       "-deprecation",
-      "-unchecked"
+      "-unchecked",
+      "-feature"
     ),
     pipelineStages in Assets := Seq(scalaJSPipeline),
-    pipelineStages := Seq(digest, gzip),
+    pipelineStages := Seq(rjs, uglify, digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
+    coverageEnabled := true,
+    coverageExcludedPackages := "<empty>;controllers.javascript;router;models;view.*;config.*;.*(AuthService|BuildInfo|Routes).*",
     scalafmtOnCompile := true,
     // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
     EclipseKeys.preTasks := Seq(compile in Compile)
@@ -57,6 +60,7 @@ lazy val client = project
   .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
   .settings(commonSettings: _*)
   .settings(
+    coverageEnabled := false,
     scalaJSUseMainModuleInitializer := true,
     scalaJSUseMainModuleInitializer in Test := false,
     scalacOptions ++= Seq("-P:scalajs:sjsDefinedByDefault", "-Ypartial-unification"),
@@ -71,6 +75,7 @@ lazy val shared = crossProject
   .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
+    coverageEnabled := false,
     libraryDependencies ++= Seq(
       "com.lihaoyi" %%% "upickle"   % "0.5.1",
       "com.lihaoyi" %%% "autowire"  % "0.2.6",
@@ -81,3 +86,5 @@ lazy val shared = crossProject
 
 lazy val sharedJvm = shared.jvm
 lazy val sharedJs  = shared.js
+
+
