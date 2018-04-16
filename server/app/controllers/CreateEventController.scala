@@ -1,6 +1,9 @@
 package controllers
 
+import java.time.LocalDate
+
 import javax.inject._
+import models.LiveEvent
 import play.api.mvc._
 import services.AuthenticationControllerHelper
 
@@ -20,10 +23,16 @@ class CreateEventController @Inject()(
   val eventForm = Form(
     mapping(
       "name"        -> text,
+      "startDate"   -> text,
+      "endDate"     -> text,
       "description" -> text,
       "webSite"     -> text,
-      "age"         -> text
-    )(Event.apply)(Event.unapply)
+      "imageUrl"    -> text,
+      "state"       -> text,
+      "street"      -> text,
+      "zip"         -> text,
+      "city"        -> text
+    )(LiveEventForm.apply)(LiveEventForm.unapply)
   )
 
   def create: Action[AnyContent] = authenticationControllerHelper.authenticatedAsync {
@@ -36,9 +45,15 @@ class CreateEventController @Inject()(
   }
 }
 
-case class Event(
+case class LiveEventForm(
     name: String,
+    startDate: String,
+    endDate: String,
     description: String,
     webSite: String,
-    age: String,
+    imageUrl: String,
+    state: String,
+    street: String,
+    zip: String,
+    city: String
 )

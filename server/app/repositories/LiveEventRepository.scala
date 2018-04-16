@@ -4,20 +4,25 @@ import com.google.inject.ImplementedBy
 import com.mongodb.ConnectionString
 import javax.inject.{Inject, Singleton}
 import models.{Address, LiveEvent, Location, Price}
-import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
+import org.bson.codecs.configuration.CodecRegistries._
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.connection.ClusterSettings
-import org.mongodb.scala.model.{IndexOptions, Indexes}
+import org.mongodb.scala.model.{Filters, IndexOptions, Indexes}
 import org.mongodb.scala.{Completed, _}
-import play.api.Configuration
+import play.api.{Configuration, Logger}
+import repositories.codec.LocalDateCodec
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @ImplementedBy(classOf[LiveEventRepositoryImpl])
 trait LiveEventRepository {
 
   def save(event: LiveEvent): Future[Completed]
+
+  def get(_id: ObjectId): Future[Option[LiveEvent]]
 
 }
 
@@ -46,8 +51,11 @@ class LiveEventRepositoryImpl @Inject()(
   private[this] lazy val database: MongoDatabase = MongoClient(clientSettings)
     .getDatabase(databaseName)
     .withCodecRegistry(
-      fromRegistries(fromProviders(classOf[LiveEvent], classOf[Address], classOf[Location], classOf[Price]),
-                     DEFAULT_CODEC_REGISTRY)
+      fromRegistries(
+        fromCodecs(new LocalDateCodec),
+        fromProviders(classOf[LiveEvent], classOf[Address], classOf[Location], classOf[Price]),
+        DEFAULT_CODEC_REGISTRY,
+      )
     )
 
   private[this] lazy val collection: MongoCollection[LiveEvent] = initCollection(database)
@@ -58,8 +66,14 @@ class LiveEventRepositoryImpl @Inject()(
     collection
   }
 
-  override def save(event: LiveEvent): Future[Completed] = collection.insertOne(event).toFuture
+  override def save(event: LiveEvent): Future[Completed] = collection.insertOne(event).toFuture.recover {
+    case t @ _ => Logger.error("Fail to save event", t); throw t
+  }
 
+  override def get(_id: ObjectId): Future[Option[LiveEvent]] =
+    collection.find[LiveEvent](Filters.eq("_id", _id)).toFuture().map(_.headOption).recover {
+      case t @ _ => Logger.error("Fail to get event", t); throw t
+    }
 }
 
 object LiveEventRepositoryImpl {

@@ -1,17 +1,23 @@
 package models
 
-import java.time.ZonedDateTime
+import java.time.LocalDate
+
+import org.bson.types.ObjectId
 
 case class LiveEvent(
+    _id: ObjectId,
     name: String,
+    startDate: LocalDate,
+    endDate: LocalDate,
     description: String,
     webSite: String,
-    image: String,
+    imageUrl: String,
     address: Address,
-    tags: Set[String],
-    speakers: Set[String],
-    languages: Set[String],
-    prices: Set[Price]
+    tags: Seq[String],
+    speakers: Seq[String],
+    languages: Seq[String],
+    prices: Seq[Price],
+    owner: String
 )
 
 case class Address(
@@ -30,8 +36,7 @@ case class Price(
     name: String,
     description: Option[String],
     value: BigDecimal,
-    start: ZonedDateTime,
-    end: ZonedDateTime,
-    priceType: String,
-    days: Set[ZonedDateTime]
+    startDate: LocalDate,
+    endDate: LocalDate,
+    priceType: String
 )
