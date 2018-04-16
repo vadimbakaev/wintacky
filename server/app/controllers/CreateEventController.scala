@@ -1,9 +1,6 @@
 package controllers
 
-import java.time.LocalDate
-
 import javax.inject._
-import models.LiveEvent
 import play.api.mvc._
 import services.AuthenticationControllerHelper
 
