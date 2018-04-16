@@ -10,7 +10,7 @@ val commonSettings = Seq(
 )
 
 lazy val server = project
-  .enablePlugins(PlayScala, ScoverageSbtPlugin)
+  .enablePlugins(PlayScala, ScoverageSbtPlugin, SbtWeb)
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
@@ -44,7 +44,7 @@ lazy val server = project
       "-feature"
     ),
     pipelineStages in Assets := Seq(scalaJSPipeline),
-    pipelineStages := Seq(rjs, uglify, digest, gzip),
+    pipelineStages := Seq(scalaJSPipeline, rjs, uglify, digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
