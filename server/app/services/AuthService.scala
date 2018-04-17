@@ -1,8 +1,6 @@
 package services
 
-import com.google.inject.Inject
 import config.AuthConfiguration
-import javax.inject.Singleton
 import play.api.Logger
 import play.api.cache.AsyncCacheApi
 import play.api.http.{HeaderNames, MimeTypes}
@@ -12,6 +10,7 @@ import play.api.libs.ws.WSClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import cats.implicits._
+import javax.inject.{Inject, Singleton}
 import models.request.external.AccessTokenRequest
 import models.responses.external.AccessTokenResponse
 import org.apache.http.HttpStatus

@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject._
+import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.AuthenticationControllerHelper
 
@@ -17,7 +17,7 @@ class CreateEventController @Inject()(
   import play.api.data.Form
   import play.api.data.Forms._
 
-  val eventForm = Form(
+  private[this] val eventForm = Form(
     mapping(
       "name"        -> text,
       "startDate"   -> text,
