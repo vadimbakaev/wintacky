@@ -9,6 +9,18 @@ val commonSettings = Seq(
   scalaVersion := "2.12.5"
 )
 
+scalacOptions in Test ++= Seq("-Yrangepos")
+scalacOptions ++= Seq(
+  "-encoding",
+  "-deprecation",
+  "-unchecked",
+  "-feature",
+  "-Ypartial-unification",
+  "-Xfatal-warnings",
+  "-P:scalajs:sjsDefinedByDefault",
+  "utf8"
+)
+
 lazy val server = project
   .enablePlugins(PlayScala, ScoverageSbtPlugin, SbtWeb)
   .settings(commonSettings: _*)
@@ -21,25 +33,17 @@ lazy val server = project
       ws,
       guice,
       ehcache,
-      "org.scalatestplus.play" %% "scalatestplus-play"   % "3.1.2" % Test,
-      "org.typelevel"          %% "cats-core"            % "1.1.0",
-      "com.vmunier"            %% "scalajs-scripts"      % "1.1.2",
-      "org.mongodb.scala"      %% "mongo-scala-driver"   % "2.2.1",
-      "com.mohiva"             %% "play-html-compressor" % "0.7.1"
+      specs2              % Test,
+      "org.typelevel"     %% "cats-core" % "1.1.0",
+      "com.vmunier"       %% "scalajs-scripts" % "1.1.2",
+      "org.webjars"       %% "webjars-play" % "2.6.3",
+      "org.mongodb.scala" %% "mongo-scala-driver" % "2.2.1",
+      "com.mohiva"        %% "play-html-compressor" % "0.7.1"
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),
-    scalacOptions ++= Seq(
-      "-Ypartial-unification",
-      "-Xfatal-warnings",
-      "-encoding",
-      "utf8",
-      "-Xfatal-warnings",
-      "-deprecation",
-      "-unchecked",
-      "-feature"
-    ),
-    pipelineStages := Seq(scalaJSPipeline, rjs, uglify, digest, gzip),
+    pipelineStages in Assets := Seq(scalaJSPipeline),
+    pipelineStages := Seq(rjs, uglify, digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
@@ -58,7 +62,6 @@ lazy val client = project
     coverageEnabled := false,
     scalaJSUseMainModuleInitializer := true,
     scalaJSUseMainModuleInitializer in Test := false,
-    scalacOptions ++= Seq("-P:scalajs:sjsDefinedByDefault", "-Ypartial-unification"),
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-core"   % "1.1.0",
       "org.scala-js"  %%% "scalajs-dom" % "0.9.5",
