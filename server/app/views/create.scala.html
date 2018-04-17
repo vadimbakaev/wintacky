@@ -1,0 +1,127 @@
+@(
+    eventForm: Form[LiveEventForm],
+    stateOptions: Seq[(String, String)] = utils.FormUtils.Countries
+)(implicit req: RequestHeader, messagesProvider: MessagesProvider)
+@import helper._
+<div class="container-fluid justify-content-center">
+
+    <div class="row justify-content-center mx-auto">
+        @form(CSRF(routes.AddEventController.add())) {
+        @CSRF.formField
+
+        <div class="form-row">
+            <div class="col-md-4">
+                @inputText(
+                eventForm("name"),
+                '_label -> "Event Name",
+                'placeholder -> "Scala Event",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-4">
+                @inputDate(
+                eventForm("startDate"),
+                '_label -> "Start Date",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-4">
+                @inputDate(
+                eventForm("endDate"),
+                '_label -> "End Date",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                @textarea(
+                eventForm("description"),
+                '_label -> "Description",
+                'placeholder -> "The World conference on Scala",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
+                eventForm("webSite"),
+                '_label -> "Web site",
+                'placeholder -> "http://2018.scala-event.com",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
+                eventForm("imageUrl"),
+                '_label -> "Image URL",
+                'placeholder -> "http://res.cloudinary.com/hbhnckuqw/image/upload/v1523647521/1a55ca71-6f3b-4061-9f73-0ebf8190476c_5C593f250c-dd60-4f90-8f1d-598d58f7d122.png",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4">
+                @select(
+                eventForm("state"),
+                options = stateOptions,
+                '_label -> "State",
+                'placeholder -> "Germany",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-6">
+                @inputText(
+                eventForm("city"),
+                '_label -> "City",
+                'placeholder -> "Berlin",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+            <div class="col-md-2">
+                @inputText(
+                eventForm("zip"),
+                '_label -> "Zip",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
+                eventForm("street"),
+                '_label -> "Street",
+                'class -> "form-control",
+                'required -> true
+                )
+            </div>
+        </div>
+        <div class="form-group">
+            @checkbox(
+            eventForm("termsAndConditions"),
+            '_label -> "Agree to terms and conditions",
+            'class -> "form-check",
+            'required -> true
+            )
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit form</button>
+        }
+
+    </div>
+
+</div>

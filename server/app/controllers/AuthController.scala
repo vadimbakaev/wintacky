@@ -55,6 +55,10 @@ class AuthController @Inject()(
               .recoverToken(code)
               .map {
                 case (idToken, accessToken) =>
+                  tokenService
+                    .recoverUser(Some(accessToken))
+                    .onComplete(tryMaybe => tryMaybe.foreach(_.foreach(cache.set(idToken + "profile", _))))
+
                   Redirect(routes.HomeController.index())
                     .withSession("idToken" -> idToken, "accessToken" -> accessToken)
               }
