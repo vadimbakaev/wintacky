@@ -44,7 +44,7 @@ lazy val server = project
     name := """wintacky""",
     scalaJSProjects := Seq(client),
     pipelineStages in Assets := Seq(scalaJSPipeline),
-    pipelineStages := Seq(rjs, uglify, digest, gzip),
+    pipelineStages := Seq(scalaJSPipeline, rjs, uglify, digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     routesGenerator := InjectedRoutesGenerator,
