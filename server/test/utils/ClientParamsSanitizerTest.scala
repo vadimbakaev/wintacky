@@ -13,12 +13,16 @@ class ClientParamsSanitizerTest extends Specification {
     remove { character                              $e1
     remove } character                              $e2
     remove ' character                              $e3
-    remove \" character                             $e4
+    remove " character                              $e4
     """
 
-  def e1: MatchResult[String] = ClientParamsSanitizer("{Hell{o world") must_=== "Hello world"
-  def e2: MatchResult[String] = ClientParamsSanitizer("Hell}}o world") must_=== "Hello world"
-  def e3: MatchResult[String] = ClientParamsSanitizer("'Hello' world") must_=== "Hello world"
-  def e4: MatchResult[String] = ClientParamsSanitizer("Hell\"o world") must_=== "Hello world"
+  def e1: MatchResult[String] = ClientParamsSanitizer("{Hell{o world") must_=== ClientParamsSanitizerTest.Result
+  def e2: MatchResult[String] = ClientParamsSanitizer("Hell}}o world") must_=== ClientParamsSanitizerTest.Result
+  def e3: MatchResult[String] = ClientParamsSanitizer("'Hello' world") must_=== ClientParamsSanitizerTest.Result
+  def e4: MatchResult[String] = ClientParamsSanitizer("Hell\"o world") must_=== ClientParamsSanitizerTest.Result
 
+}
+
+object ClientParamsSanitizerTest {
+  val Result: String = "Hello world"
 }
