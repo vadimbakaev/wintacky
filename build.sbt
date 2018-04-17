@@ -17,10 +17,6 @@ lazy val server = project
       //Java
       "org.elasticsearch"        % "elasticsearch"                        % "6.0.1",
       "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "6.0.1",
-      "org.webjars"              % "bootstrap"                            % "4.0.0-2",
-      "org.webjars"              % "animate.css"                          % "3.5.2",
-      "org.webjars"              % "jquery"                               % "3.3.1-1",
-      "org.webjars.npm"          % "popper.js"                            % "1.14.3",
       //Scala
       ws,
       guice,
@@ -28,7 +24,6 @@ lazy val server = project
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
       "org.typelevel"          %% "cats-core"          % "1.1.0",
       "com.vmunier"            %% "scalajs-scripts"    % "1.1.2",
-      "org.webjars"            %% "webjars-play"       % "2.6.3",
       "org.mongodb.scala"      %% "mongo-scala-driver" % "2.2.1"
     ),
     name := """wintacky""",
