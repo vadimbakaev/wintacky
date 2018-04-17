@@ -21,10 +21,11 @@ lazy val server = project
       ws,
       guice,
       ehcache,
-      "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
-      "org.typelevel"          %% "cats-core"          % "1.1.0",
-      "com.vmunier"            %% "scalajs-scripts"    % "1.1.2",
-      "org.mongodb.scala"      %% "mongo-scala-driver" % "2.2.1"
+      "org.scalatestplus.play" %% "scalatestplus-play"   % "3.1.2" % Test,
+      "org.typelevel"          %% "cats-core"            % "1.1.0",
+      "com.vmunier"            %% "scalajs-scripts"      % "1.1.2",
+      "org.mongodb.scala"      %% "mongo-scala-driver"   % "2.2.1",
+      "com.mohiva"             %% "play-html-compressor" % "0.7.1"
     ),
     name := """wintacky""",
     scalaJSProjects := Seq(client),
@@ -38,7 +39,6 @@ lazy val server = project
       "-unchecked",
       "-feature"
     ),
-    pipelineStages in Assets := Seq(scalaJSPipeline),
     pipelineStages := Seq(scalaJSPipeline, rjs, uglify, digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
@@ -81,5 +81,3 @@ lazy val shared = crossProject
 
 lazy val sharedJvm = shared.jvm
 lazy val sharedJs  = shared.js
-
-
