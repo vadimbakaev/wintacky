@@ -3,6 +3,8 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.AuthenticationControllerHelper
+import play.api.data.Form
+import play.api.data.Forms._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -13,9 +15,6 @@ class CreateEventController @Inject()(
     authenticationControllerHelper: AuthenticationControllerHelper
 ) extends AbstractController(cc)
     with play.api.i18n.I18nSupport {
-
-  import play.api.data.Form
-  import play.api.data.Forms._
 
   private[this] val eventForm = Form(
     mapping(
