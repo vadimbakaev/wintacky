@@ -13,14 +13,13 @@ class HomeController @Inject()(
 ) extends AbstractController(cc) {
 
   def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    authService
-      .recoverUser(request.session.get("accessToken"))
-      .map { maybeUser =>
-        Ok(
-          views.html
-            .index("Welcome to Wintacky project!", maybeUser.isDefined)(views.html.welcome("")(views.html.cards(Nil)))
-        )
-      }
+    for {
+      maybeUser <- authService.recoverUser(request.session.get("accessToken"))
+    } yield
+      Ok(
+        views.html
+          .index("Welcome to Wintacky project!", maybeUser.isDefined)(views.html.welcome("")(views.html.cards(Nil)))
+      )
 
   }
 }

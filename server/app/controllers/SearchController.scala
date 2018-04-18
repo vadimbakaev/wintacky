@@ -16,19 +16,14 @@ class SearchController @Inject()(
 
   def search(key: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val disinfectedKey = ClientParamsSanitizer(key)
-    searchService
-      .search(disinfectedKey)
-      .flatMap(
-        liveEvents =>
-          authService
-            .recoverUser(request.session.get("accessToken"))
-            .map { maybeUser =>
-              Ok(
-                views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(
-                  views.html.welcome(disinfectedKey)(views.html.cards(liveEvents))
-                )
-              )
-          }
+    for {
+      liveEvents <- searchService.search(disinfectedKey)
+      maybeUser  <- authService.recoverUser(request.session.get("accessToken"))
+    } yield
+      Ok(
+        views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(
+          views.html.welcome(disinfectedKey)(views.html.cards(liveEvents))
+        )
       )
   }
 }
