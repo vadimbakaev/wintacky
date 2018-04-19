@@ -1,19 +1,18 @@
 package services
 
 import config.AuthConfiguration
+import javax.inject.{Inject, Singleton}
+import models.UserProfile
+import models.request.external.AccessTokenRequest
+import models.responses.external.AccessTokenResponse
 import play.api.Logger
 import play.api.cache.AsyncCacheApi
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import models.request.external.AccessTokenRequest
-import models.responses.external.AccessTokenResponse
-import org.apache.http.HttpStatus
 
 @Singleton
 class AuthService @Inject()(
@@ -48,33 +47,31 @@ class AuthService @Inject()(
           )
       }
 
-  def recoverUser(accessTokenOpt: Option[String]): Future[Option[JsValue]] =
-    accessTokenOpt
-      .map(
-        accessToken => {
-          val userKey = s"aToken_$accessToken"
-          cache
-            .get[JsValue](userKey)
-            .flatMap {
-              case value @ Some(_) =>
-                Future.successful(value)
-              case _ =>
-                ws.url(userInfoUrl)
-                  .withQueryStringParameters(AuthService.AccessTokenKey -> accessToken)
-                  .get()
-                  .flatMap {
-                    case ok if ok.status === HttpStatus.SC_OK =>
-                      Logger.info(s"User profile: ${ok.json}")
-                      cache.set(userKey, ok.json)
-                      Future.successful(Some(ok.json))
-                    case fail @ _ =>
-                      Logger.error(s"Unexpected response : ${fail.body}")
-                      Future.successful(None)
+  def recoverUser(accessToken: String): Future[Option[UserProfile]] =
+    cache
+      .get[UserProfile](accessToken)
+      .flatMap {
+        case value @ Some(_) =>
+          Future.successful(value)
+        case _ =>
+          ws.url(userInfoUrl)
+            .withQueryStringParameters(AuthService.AccessTokenKey -> accessToken)
+            .get()
+            .map { response =>
+              response.json
+                .validate[UserProfile]
+                .fold(
+                  invalid => {
+                    Logger.error(s"Unexpected response : ${response.body} $invalid")
+                    None
+                  },
+                  userProfile => {
+                    cache.set(accessToken, userProfile)
+                    Some(userProfile)
                   }
+                )
             }
-        }
-      )
-      .getOrElse(Future.successful(None))
+      }
 
 }
 

@@ -6,6 +6,7 @@ import services.{AuthService, SearchService}
 import utils.ClientParamsSanitizer
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class SearchController @Inject()(
@@ -17,8 +18,9 @@ class SearchController @Inject()(
   def search(key: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val disinfectedKey = ClientParamsSanitizer(key)
     for {
-      liveEvents <- searchService.search(disinfectedKey)
-      maybeUser  <- authService.recoverUser(request.session.get("accessToken"))
+      liveEvents       <- searchService.search(disinfectedKey)
+      maybeAccessToken <- Future.successful(request.session.get(AuthController.AccessToken))
+      maybeUser        <- maybeAccessToken.map(authService.recoverUser).getOrElse(Future.successful(None))
     } yield
       Ok(
         views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(

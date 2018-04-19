@@ -1,5 +1,6 @@
 package controllers
 
+import cats.implicits._
 import config.AuthConfiguration
 import javax.inject.{Inject, Singleton}
 import play.api.cache.SyncCacheApi
@@ -9,7 +10,6 @@ import utils.RandomUtil
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import cats.implicits._
 
 @Singleton
 class AuthController @Inject()(
@@ -56,11 +56,11 @@ class AuthController @Inject()(
               .map {
                 case (idToken, accessToken) =>
                   tokenService
-                    .recoverUser(Some(accessToken))
+                    .recoverUser(accessToken)
                     .onComplete(tryMaybe => tryMaybe.foreach(_.foreach(cache.set(idToken + "profile", _))))
 
                   Redirect(routes.HomeController.index())
-                    .withSession("idToken" -> idToken, "accessToken" -> accessToken)
+                    .withSession(AuthController.IdToken -> idToken, AuthController.AccessToken -> accessToken)
               }
               .recover {
                 case e @ _ => Unauthorized(e.getMessage)
@@ -83,4 +83,6 @@ object AuthController {
   val ScopeKey: String        = "scope"
   val StateKey: String        = "state"
   val ReturnToKey: String     = "returnTo"
+  val IdToken: String         = "idToken"
+  val AccessToken: String     = "AccessToken"
 }

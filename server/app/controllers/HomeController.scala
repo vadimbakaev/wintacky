@@ -5,6 +5,7 @@ import play.api.mvc._
 import services.AuthService
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class HomeController @Inject()(
@@ -14,7 +15,8 @@ class HomeController @Inject()(
 
   def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     for {
-      maybeUser <- authService.recoverUser(request.session.get("accessToken"))
+      maybeAccessToken <- Future.successful(request.session.get(AuthController.AccessToken))
+      maybeUser        <- maybeAccessToken.map(authService.recoverUser).getOrElse(Future.successful(None))
     } yield
       Ok(
         views.html
