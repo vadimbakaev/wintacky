@@ -23,7 +23,7 @@ class SearchController @Inject()(
       maybeUser        <- maybeAccessToken.map(authService.recoverUser).getOrElse(Future.successful(None))
     } yield
       Ok(
-        views.html.index("Welcome to Wintacky project!", maybeUser.isDefined)(
+        views.html.index("Welcome to Wintacky project!", maybeUser)(
           views.html.welcome(disinfectedKey)(views.html.cards(liveEvents))
         )
       )

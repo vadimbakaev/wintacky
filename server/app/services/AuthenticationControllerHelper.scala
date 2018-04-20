@@ -15,14 +15,14 @@ class AuthenticationControllerHelper @Inject()(
     authService: AuthService
 ) {
 
-  def authenticatedAsync(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = actionBuilder.async {
-    request =>
+  def authenticatedAsync(f: (UserProfile, Request[AnyContent]) => Future[Result]): Action[AnyContent] =
+    actionBuilder.async { request =>
       request.session
         .get(AuthController.IdToken)
         .flatMap(idToken => cache.get[UserProfile](idToken + "profile"))
-        .map(_ => f(request))
+        .map(userProfile => f(userProfile, request))
         .orElse(Some(Future.successful(Results.Redirect(routes.HomeController.index()))))
         .get
-  }
+    }
 
 }

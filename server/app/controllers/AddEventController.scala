@@ -1,8 +1,9 @@
 package controllers
 
 import java.time.LocalDate
+
 import javax.inject._
-import models.{Address, LiveEvent}
+import models.{Address, LiveEvent, UserProfile}
 import org.bson.types.ObjectId
 import play.api.Logger
 import play.api.mvc._
@@ -20,13 +21,12 @@ class AddEventController @Inject()(
 ) extends AbstractController(cc) {
 
   def add: Action[AnyContent] = authenticationControllerHelper.authenticatedAsync {
-    implicit request: Request[AnyContent] =>
+    case (userProfile: UserProfile, request: Request[AnyContent]) =>
       Logger.info("Add event request " + request.body.asFormUrlEncoded.getOrElse("NONE"))
 
       for {
         map   <- request.body.asFormUrlEncoded.map(_.mapValues(_.last))
-        token <- request.session.get("idToken")
-        event <- parseFromMap(map, token)
+        event <- parseFromMap(map, userProfile)
         _ = Logger.info("Start save event")
       } yield {
         liveEventRepository.save(event)
@@ -35,7 +35,7 @@ class AddEventController @Inject()(
       Future.successful(Redirect(routes.CreateEventController.create()))
   }
 
-  def parseFromMap(map: Map[String, String], owner: String): Option[LiveEvent] =
+  def parseFromMap(map: Map[String, String], owner: UserProfile): Option[LiveEvent] =
     for {
       name        <- map.get("name")
       startDate   <- map.get("startDate")
@@ -66,7 +66,7 @@ class AddEventController @Inject()(
         speakers = Nil,
         languages = Nil,
         prices = Nil,
-        owner = owner
+        owner = owner.nickname
       )
     }
 }

@@ -20,7 +20,7 @@ class HomeController @Inject()(
     } yield
       Ok(
         views.html
-          .index("Welcome to Wintacky project!", maybeUser.isDefined)(views.html.welcome("")(views.html.cards(Nil)))
+          .index("Welcome to Wintacky project!", maybeUser)(views.html.welcome("")(views.html.cards(Nil)))
       )
 
   }

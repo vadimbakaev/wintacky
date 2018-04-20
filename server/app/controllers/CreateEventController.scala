@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
+import models.UserProfile
 import play.api.mvc._
 import services.AuthenticationControllerHelper
 import play.api.data.Form
@@ -32,12 +33,16 @@ class CreateEventController @Inject()(
   )
 
   def create: Action[AnyContent] = authenticationControllerHelper.authenticatedAsync {
-    implicit request: Request[AnyContent] =>
-      Future.successful(
-        Ok(
-          views.html.index("Add new Event!", isLogged = true)(views.html.create(eventForm))
+    (userProfile: UserProfile, request: Request[AnyContent]) =>
+      {
+        implicit val req: Request[AnyContent] = request
+        Future.successful(
+          Ok(
+            views.html.index("Add new Event!", Some(userProfile))(views.html.create(eventForm))
+          )
         )
-      )
+      }
+
   }
 }
 

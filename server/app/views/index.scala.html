@@ -1,4 +1,4 @@
-@(title: String, isLogged:Boolean = false)(content: Html)
+@(title: String, maybeUser:Option[UserProfile])(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +26,10 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="/">Wintacky</a>
+    <a class="navbar-brand" href="/">
+        Wintacky @for(user <- maybeUser) {
+        for @{user.nickname}
+        }</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -34,22 +37,19 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link disabled" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
-            @if(isLogged){
+            @if(maybeUser.isDefined){
             <li class="nav-item">
-                <a class="nav-link" href="/create">Add Event</a>
+                <a class="nav-link" href="/create"><span class="fa fa-plus-square"></span> Add event</a>
             </li>
             }
-            @if(!isLogged){
+            @if(maybeUser.isEmpty){
             <li class="nav-item">
-                <a class="nav-link" href="/login">Sign In</a>
+                <a class="nav-link" href="/login"><span class="fa fa-sign-out-alt"></span> Sign In</a>
             </li>
             }
-            @if(isLogged){
+            @if(maybeUser.isDefined){
             <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
+                <a class="nav-link" href="/logout"><span class="fa fa-sign-in-alt"></span> Logout</a>
             </li>
             }
         </ul>
