@@ -17,8 +17,14 @@ case class LiveEvent(
     speakers: Seq[String],
     languages: Seq[String],
     prices: Seq[Price],
-    owner: String
+    owner: String,
+    status: String = LiveEvent.Added
 )
+
+object LiveEvent {
+  val Added: String     = "Added"
+  val Published: String = "Published"
+}
 
 case class Address(
     street: String,
