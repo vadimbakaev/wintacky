@@ -2,13 +2,18 @@ package services
 
 import java.util.Base64
 
+import cats.implicits._
 import com.google.inject.{ImplementedBy, Singleton}
 import javax.inject.Inject
-import models.LiveEventStub
-import org.apache.http.{HttpHeaders, HttpHost}
+import models.{LiveEvent, LiveEventStub}
 import org.apache.http.message.BasicHeader
+import org.apache.http.{HttpHeaders, HttpHost}
+import org.elasticsearch.action.delete.DeleteRequest
+import org.elasticsearch.action.get.GetRequest
+import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RestClient, RestHighLevelClient}
+import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.index.query.QueryStringQueryBuilder
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import play.api.Configuration
@@ -17,16 +22,15 @@ import play.api.libs.json.Json
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
-import cats.implicits._
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
-  def search(key: String): Future[Seq[LiveEventStub]]
+  def searchStub(key: String): Future[Seq[LiveEventStub]]
 }
 
 @Singleton
 class SearchServiceImpl @Inject()(
-    configuration: Configuration
+    configuration: Configuration,
 ) extends SearchService {
 
   private[this] lazy val elasticHost: String   = configuration.get[String]("elastic.host")
@@ -41,7 +45,7 @@ class SearchServiceImpl @Inject()(
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(loginPassword.getBytes)}"
   )
 
-  override def search(key: String): Future[Seq[LiveEventStub]] =
+  override def searchStub(key: String): Future[Seq[LiveEventStub]] =
     Future {
       val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
       val searchRequest = new SearchRequest()
@@ -57,5 +61,4 @@ class SearchServiceImpl @Inject()(
         .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEventStub].asOpt)
         .toSeq
     }
-
 }

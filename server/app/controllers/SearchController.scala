@@ -18,7 +18,7 @@ class SearchController @Inject()(
   def search(key: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val disinfectedKey = ClientParamsSanitizer(key)
     for {
-      liveEvents       <- searchService.search(disinfectedKey)
+      liveEvents       <- searchService.searchStub(disinfectedKey)
       maybeAccessToken <- Future.successful(request.session.get(AuthController.AccessToken))
       maybeUser        <- maybeAccessToken.map(authService.recoverUser).getOrElse(Future.successful(None))
     } yield
