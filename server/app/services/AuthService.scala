@@ -13,6 +13,7 @@ import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.Try
 
 @Singleton
 class AuthService @Inject()(
@@ -58,18 +59,22 @@ class AuthService @Inject()(
             .withQueryStringParameters(AuthService.AccessTokenKey -> accessToken)
             .get()
             .map { response =>
-              response.json
-                .validate[UserProfile]
-                .fold(
-                  invalid => {
-                    Logger.error(s"Unexpected response : ${response.body} $invalid")
-                    None
-                  },
-                  userProfile => {
-                    cache.set(accessToken, userProfile)
-                    Some(userProfile)
-                  }
-                )
+              for {
+                json <- Try(response.json).toOption
+                userProfile <- json
+                  .validate[UserProfile]
+                  .fold(
+                    invalid => {
+                      Logger.error(s"Unexpected response : ${response.body} $invalid")
+                      None
+                    },
+                    userProfile => {
+                      cache.set(accessToken, userProfile)
+                      Some(userProfile)
+                    }
+                  )
+              } yield userProfile
+
             }
       }
 
