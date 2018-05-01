@@ -6,7 +6,7 @@ onLoad in Global ~= (_ andThen ("project server" :: _))
 val commonSettings = Seq(
   organization := "com.pawnrule",
   version := "1.0-SNAPSHOT",
-  scalaVersion := "2.12.5"
+  scalaVersion := "2.12.6"
 )
 
 scalacOptions in Test ++= Seq("-Yrangepos")
