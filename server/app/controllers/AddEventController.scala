@@ -47,6 +47,7 @@ class AddEventController @Inject()(
       street      <- map.get("street")
       zip         <- map.get("zip")
       city        <- map.get("city")
+      tags        <- map.get("tags").map(_.split(",").map(_.trim))
     } yield {
       LiveEvent(
         _id = ObjectId.get(),
@@ -62,7 +63,7 @@ class AddEventController @Inject()(
           zip = zip
         ),
         imageUrl = imageUrl,
-        tags = Nil,
+        tags = tags,
         speakers = Nil,
         languages = Nil,
         prices = Nil,

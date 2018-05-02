@@ -51,6 +51,18 @@
         <div class="form-row">
             <div class="col-md-12">
                 @inputText(
+                eventForm("tags"),
+                '_label -> "Tags separated by comma",
+                'placeholder -> "scala, bigData, functional programming",
+                'class -> "form-control",
+                'required -> false
+                )
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12">
+                @inputText(
                 eventForm("webSite"),
                 '_label -> "Web site",
                 'placeholder -> "http://2018.scala-event.com",
