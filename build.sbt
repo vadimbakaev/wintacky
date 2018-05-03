@@ -16,6 +16,7 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-feature",
   "-Ypartial-unification",
+  "-Ybackend-parallelism",
   "-Xfatal-warnings",
   "-P:scalajs:sjsDefinedByDefault",
   "utf8"
