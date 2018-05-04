@@ -37,15 +37,10 @@ class LiveEventRepositoryImpl @Inject()(
   private[this] lazy val password       = config.get[String](LiveEventRepositoryImpl.Password)
   private[this] lazy val collectionName = config.get[String](LiveEventRepositoryImpl.CollectionName)
 
-  private[this] lazy val clusterSettings = ClusterSettings
-    .builder()
-    .applyConnectionString(new ConnectionString(mongodbURI))
-    .build()
-
   private[this] lazy val clientSettings: MongoClientSettings = MongoClientSettings
     .builder()
+    .applyConnectionString(new ConnectionString(mongodbURI))
     .credential(MongoCredential.createCredential(userName, databaseName, password.toCharArray))
-    .clusterSettings(clusterSettings)
     .build()
 
   private[this] lazy val database: MongoDatabase = MongoClient(clientSettings)
