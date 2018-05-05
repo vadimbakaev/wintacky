@@ -8,7 +8,6 @@ import org.bson.codecs.configuration.CodecRegistries._
 import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.connection.ClusterSettings
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes}
 import org.mongodb.scala.{Completed, _}
 import play.api.{Configuration, Logger}

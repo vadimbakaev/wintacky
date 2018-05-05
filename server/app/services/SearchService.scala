@@ -5,15 +5,11 @@ import java.util.Base64
 import cats.implicits._
 import com.google.inject.{ImplementedBy, Singleton}
 import javax.inject.Inject
-import models.{LiveEvent, LiveEventStub}
+import models.LiveEventStub
 import org.apache.http.message.BasicHeader
 import org.apache.http.{HttpHeaders, HttpHost}
-import org.elasticsearch.action.delete.DeleteRequest
-import org.elasticsearch.action.get.GetRequest
-import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RestClient, RestHighLevelClient}
-import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.index.query.QueryStringQueryBuilder
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import play.api.Configuration
