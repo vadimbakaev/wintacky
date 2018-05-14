@@ -2,38 +2,31 @@ package models
 
 import java.time.LocalDate
 
-import org.bson.types.ObjectId
-
-case class LiveEvent(
-    _id: ObjectId,
+case class LiveEventView(
+    _id: String,
     name: String,
     startDate: LocalDate,
     endDate: LocalDate,
     description: String,
     webSite: String,
     imageUrl: String,
-    address: Address,
+    address: AddressView,
     tags: Seq[String],
     speakers: Seq[String],
     languages: Seq[String],
-    prices: Seq[Price],
+    prices: Seq[PriceView],
     owner: String,
-    status: String = LiveEvent.Added
+    status: String
 )
 
-object LiveEvent {
-  val Added: String     = "Added"
-  val Published: String = "Published"
-}
-
-case class Address(
+case class AddressView(
     street: String,
     city: String,
     state: String,
     zip: String
 )
 
-case class Price(
+case class PriceView(
     name: String,
     description: Option[String],
     value: BigDecimal,

@@ -3,7 +3,7 @@ package repositories
 import com.google.inject.ImplementedBy
 import com.mongodb.ConnectionString
 import javax.inject.{Inject, Singleton}
-import models.{Address, LiveEvent, Location, Price}
+import models.{Address, LiveEvent, Price}
 import org.bson.codecs.configuration.CodecRegistries._
 import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
@@ -47,7 +47,7 @@ class LiveEventRepositoryImpl @Inject()(
     .withCodecRegistry(
       fromRegistries(
         fromCodecs(new LocalDateCodec),
-        fromProviders(classOf[LiveEvent], classOf[Address], classOf[Location], classOf[Price]),
+        fromProviders(classOf[LiveEvent], classOf[Address], classOf[Price]),
         DEFAULT_CODEC_REGISTRY,
       )
     )
