@@ -9,7 +9,7 @@ import org.bson.types.ObjectId
 @Singleton
 class LiveEvent2LiveEventView extends (LiveEvent => LiveEventView) {
   override def apply(v1: LiveEvent): LiveEventView = v1 match {
-    case _ @LiveEvent(
+    case LiveEvent(
         _id: ObjectId,
         name: String,
         startDate: LocalDate,
