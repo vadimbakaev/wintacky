@@ -3,7 +3,7 @@ package models
 import java.time.LocalDate
 
 case class LiveEventView(
-    _id: String,
+    id: String,
     name: String,
     startDate: LocalDate,
     endDate: LocalDate,
