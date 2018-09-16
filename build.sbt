@@ -36,10 +36,10 @@ lazy val server = project
       guice,
       ehcache,
       specs2              % Test,
-      "org.typelevel"     %% "cats-core" % "1.1.0",
+      "org.typelevel"     %% "cats-core" % "1.4.0",
       "com.vmunier"       %% "scalajs-scripts" % "1.1.2",
       "org.webjars"       %% "webjars-play" % "2.6.3",
-      "org.mongodb.scala" %% "mongo-scala-driver" % "2.3.0",
+      "org.mongodb.scala" %% "mongo-scala-driver" % "2.4.1",
       "com.mohiva"        %% "play-html-compressor" % "0.7.1"
     ),
     name := """wintacky""",
@@ -66,7 +66,7 @@ lazy val client = project
     scalaJSUseMainModuleInitializer := true,
     scalaJSUseMainModuleInitializer in Test := false,
     libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core"   % "1.1.0",
+      "org.typelevel" %%% "cats-core"   % "1.4.0",
       "org.scala-js"  %%% "scalajs-dom" % "0.9.5",
       "com.lihaoyi"   %%% "scalatags"   % "0.6.7"
     )
