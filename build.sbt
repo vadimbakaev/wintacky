@@ -1,4 +1,6 @@
 import sbt.Keys.version
+// shadow sbt-scalajs' crossProject and CrossType from Scala.js 0.6.x
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 // loads the server project at sbt startup
 onLoad in Global ~= (_ andThen ("project server" :: _))
@@ -6,7 +8,7 @@ onLoad in Global ~= (_ andThen ("project server" :: _))
 val commonSettings = Seq(
   organization := "com.pawnrule",
   version := "1.0-SNAPSHOT",
-  scalaVersion := "2.12.8"
+  scalaVersion := "2.12.6"
 )
 
 scalacOptions in Test ++= Seq("-Yrangepos")
@@ -72,7 +74,7 @@ lazy val client = project
     )
   )
 
-lazy val shared = crossProject
+lazy val shared = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
