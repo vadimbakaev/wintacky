@@ -23,7 +23,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
 
 // Scala.js plugins
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.22")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.0.0-M6")
 
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.6")
 
