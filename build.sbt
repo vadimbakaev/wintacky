@@ -38,7 +38,7 @@ lazy val server = project
       guice,
       ehcache,
       specs2              % Test,
-      "org.typelevel"     %% "cats-core" % "1.5.0",
+      "org.typelevel"     %% "cats-core" % "1.6.0",
       "com.vmunier"       %% "scalajs-scripts" % "1.1.2",
       "org.webjars"       %% "webjars-play" % "2.6.3",
       "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0",
