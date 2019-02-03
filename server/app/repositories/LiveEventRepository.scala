@@ -10,7 +10,7 @@ import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes}
 import org.mongodb.scala.{Completed, _}
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Logging}
 import repositories.codec.LocalDateCodec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +28,8 @@ trait LiveEventRepository {
 @Singleton
 class LiveEventRepositoryImpl @Inject()(
     config: Configuration
-) extends LiveEventRepository {
+) extends LiveEventRepository
+    with Logging {
 
   private[this] lazy val mongodbURI     = config.get[String](LiveEventRepositoryImpl.Uri)
   private[this] lazy val databaseName   = config.get[String](LiveEventRepositoryImpl.Db)
@@ -61,12 +62,12 @@ class LiveEventRepositoryImpl @Inject()(
   }
 
   override def save(event: LiveEvent): Future[Completed] = collection.insertOne(event).toFuture.recover {
-    case t @ _ => Logger.error("Fail to save event", t); throw t
+    case t @ _ => logger.error("Fail to save event", t); throw t
   }
 
   override def get(_id: ObjectId): Future[Option[LiveEvent]] =
     collection.find[LiveEvent](Filters.eq("_id", _id)).toFuture().map(_.headOption).recover {
-      case t @ _ => Logger.error("Fail to get event", t); throw t
+      case t @ _ => logger.error("Fail to get event", t); throw t
     }
 }
 

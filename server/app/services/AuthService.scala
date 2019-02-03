@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import models.UserProfile
 import models.request.external.AccessTokenRequest
 import models.responses.external.AccessTokenResponse
-import play.api.Logger
+import play.api.Logging
 import play.api.cache.AsyncCacheApi
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Json
@@ -20,7 +20,7 @@ class AuthService @Inject()(
     config: AuthConfiguration,
     cache: AsyncCacheApi,
     ws: WSClient
-) {
+) extends Logging {
 
   private[this] lazy val tokenUrl    = s"https://${config.domain}/oauth/token"
   private[this] lazy val userInfoUrl = s"https://${config.domain}/userinfo"
@@ -65,7 +65,7 @@ class AuthService @Inject()(
                   .validate[UserProfile]
                   .fold(
                     invalid => {
-                      Logger.error(s"Unexpected response : ${response.body} $invalid")
+                      logger.error(s"Unexpected response : ${response.body} $invalid")
                       None
                     },
                     userProfile => {
