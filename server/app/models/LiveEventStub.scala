@@ -2,6 +2,7 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
+@deprecated
 case class LiveEventStub(
     name: String,
     place: String,

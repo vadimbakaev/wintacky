@@ -3,12 +3,13 @@ package controllers
 import java.time.LocalDate
 
 import javax.inject._
+import mappers.LiveEvent2LiveEventView
 import models.{Address, LiveEvent, UserProfile}
 import org.bson.types.ObjectId
 import play.api.Logger
 import play.api.mvc._
 import repositories.LiveEventRepository
-import services.AuthenticationControllerHelper
+import services.{AuthenticationControllerHelper, SearchService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -17,7 +18,8 @@ import scala.concurrent.Future
 class AddEventController @Inject()(
     cc: ControllerComponents,
     authenticationControllerHelper: AuthenticationControllerHelper,
-    liveEventRepository: LiveEventRepository
+    liveEventRepository: LiveEventRepository,
+    searchService: SearchService
 ) extends AbstractController(cc) {
 
   def add: Action[AnyContent] = authenticationControllerHelper.authenticatedAsync {
@@ -27,9 +29,14 @@ class AddEventController @Inject()(
       for {
         map   <- request.body.asFormUrlEncoded.map(_.mapValues(_.last))
         event <- parseFromMap(map, userProfile)
-        _ = Logger.info("Start save event")
+        _ = Logger.info(s"Start save event: $event")
       } yield {
-        liveEventRepository.save(event)
+        for {
+          e <- searchService.upsert(new LiveEvent2LiveEventView()(event)).recover {
+            case e => Logger.error("Undable to save event on elastic search", e)
+          }
+          _ = Logger.info(s"Save result, $e")
+        } yield liveEventRepository.save(event)
       }
 
       Future.successful(Redirect(routes.CreateEventController.create()))

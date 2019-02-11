@@ -2,6 +2,8 @@ package models
 
 import java.time.LocalDate
 
+import play.api.libs.json.{Format, Json}
+
 case class LiveEventView(
     id: String,
     name: String,
@@ -19,12 +21,20 @@ case class LiveEventView(
     status: String
 )
 
+object LiveEventView {
+  implicit val format: Format[LiveEventView] = Json.format
+}
+
 case class AddressView(
     street: String,
     city: String,
     state: String,
     zip: String
 )
+
+object AddressView {
+  implicit val format: Format[AddressView] = Json.format
+}
 
 case class PriceView(
     name: String,
@@ -34,3 +44,7 @@ case class PriceView(
     endDate: LocalDate,
     priceType: String
 )
+
+object PriceView {
+  implicit val format: Format[PriceView] = Json.format
+}

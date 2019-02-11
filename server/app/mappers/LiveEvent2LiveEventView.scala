@@ -42,7 +42,7 @@ class LiveEvent2LiveEventView extends (LiveEvent => LiveEventView) {
         tags,
         speakers,
         languages,
-        prices.flatMap(price => Price.unapply(price).map(PriceView.tupled)),
+        prices.flatMap(price => Price.unapply(price).map((PriceView.apply _).tupled)),
         owner,
         status
       )
