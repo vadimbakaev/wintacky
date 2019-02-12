@@ -5,7 +5,7 @@ import java.util.Base64
 import cats.implicits._
 import com.google.inject.{ImplementedBy, Singleton}
 import javax.inject.Inject
-import models.{LiveEventStub, LiveEventView}
+import models.LiveEventView
 import org.apache.http.message.BasicHeader
 import org.apache.http.{HttpHeaders, HttpHost}
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
@@ -23,8 +23,6 @@ import scala.util.Try
 
 @ImplementedBy(classOf[SearchServiceImpl])
 trait SearchService {
-  @deprecated
-  def searchStub(key: String): Future[Seq[LiveEventStub]]
 
   def search(key: String): Future[Seq[LiveEventView]]
 
@@ -48,23 +46,6 @@ class SearchServiceImpl @Inject()(
     HttpHeaders.AUTHORIZATION,
     s"Basic ${Base64.getEncoder.withoutPadding().encodeToString(loginPassword.getBytes)}"
   )
-
-  override def searchStub(key: String): Future[Seq[LiveEventStub]] =
-    Future {
-      val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
-      val searchRequest = new SearchRequest()
-        .indices("wintacky")
-        .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(key)))
-
-      val response: SearchResponse = client.search(searchRequest)
-
-      Try(client.close())
-
-      response.getHits.getHits
-        .filter(_.getType === "live-event")
-        .flatMap(hint => Json.parse(hint.getSourceAsString).validate[LiveEventStub].asOpt)
-        .toSeq
-    }
 
   override def search(key: String): Future[Seq[LiveEventView]] =
     Future {

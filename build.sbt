@@ -40,7 +40,7 @@ lazy val server = project
       specs2              % Test,
       "org.typelevel"     %% "cats-core" % "1.6.0",
       "com.vmunier"       %% "scalajs-scripts" % "1.1.2",
-      "org.webjars"       %% "webjars-play" % "2.6.3",
+      "org.webjars"       %% "webjars-play" % "2.7.0",
       "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0",
       "com.mohiva"        %% "play-html-compressor" % "0.7.1"
     ),

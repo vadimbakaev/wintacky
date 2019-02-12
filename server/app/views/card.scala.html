@@ -1,10 +1,10 @@
-@(liveEvent: LiveEventStub)
+@(liveEvent: LiveEventView)
 
 <div class="card mt-3 mx-auto text-center" style="max-width: 20rem;">
-    <img class="card-img-top" src="@liveEvent.image" alt="Card image cap">
+    <img class="card-img-top" src="@liveEvent.imageUrl" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title">@liveEvent.name</h5>
-        <p class="card-text">@liveEvent.description</p>
-        <a href="#" class="btn btn-primary">See more</a>
+        <p class="card-text">@liveEvent.startDate - @liveEvent.endDate</p>
+        <a href="@liveEvent.webSite" class="btn btn-primary">Go to the website</a>
     </div>
 </div>
