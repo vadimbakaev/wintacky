@@ -21,14 +21,6 @@ addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.3.12")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
 //> sbt dependencyUpdates
 
-// Scala.js plugins
-
-addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.0")
-
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.26")
-
-addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.6")
-
 // Web plugins
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.1.2")

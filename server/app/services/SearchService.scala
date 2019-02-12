@@ -16,6 +16,7 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import play.api.Configuration
 import play.api.libs.json.Json
+import utils.ClientParamsSanitizer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -52,7 +53,7 @@ class SearchServiceImpl @Inject()(
       val client = new RestHighLevelClient(RestClient.builder(host).setDefaultHeaders(Array(authorization)))
       val searchRequest = new SearchRequest()
         .indices("collection")
-        .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(key)))
+        .source(new SearchSourceBuilder().query(new QueryStringQueryBuilder(ClientParamsSanitizer(key))))
 
       val response: SearchResponse = client.search(searchRequest)
 

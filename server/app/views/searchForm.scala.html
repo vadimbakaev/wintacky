@@ -2,16 +2,20 @@
 
 <div class="row justify-content-center">
 
+    <form action="/search">
     <div class="col" style="max-width: 30rem;">
         <div class="input-group input-group-lg mx-auto">
+
             <input id="search-input" name="key" class="form-control" type="text" placeholder="Search..."
                    aria-label="Search" value='@key'>
             <div class="input-group-append">
-                <button id="search-btn" class="btn btn-primary btn-lg" type="button" aria-label="Left Align">
+                <button id="search-btn" class="btn btn-primary btn-lg" type="submit" aria-label="Left Align">
                     <span class="fas fa-search form-control-feedback" aria-hidden="true"></span>
                 </button>
             </div>
+
         </div>
     </div>
+    </form>
 
 </div>
